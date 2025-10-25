@@ -5,8 +5,6 @@ pcall(function()
     local desiredLength = 0
     local MyCarPath = nil
     local Carspeed = 100
-    local IsOnCarFly = false
-    local IsOnCarSpeed = false
     local function findPlayerVehicle()
         local 1 = workspace:WaitForChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart
         local 2 = 1.Parent
@@ -234,7 +232,6 @@ pcall(function()
                 alert("Please detect Car first!", "Alert", "triangle-alert")
                 return
             end
-            IsOnCarSpeed = not IsOnCarSpeed
             running = Value
             if running then
                 local seat = MyCarPath.DriverSeat
@@ -246,25 +243,6 @@ pcall(function()
 		            end
                 end)
             end
-        end,
-    })
-    local InstantBrake = Tab:CreateKeybind({
-        Name = "Instant Brake",
-        CurrentKeybind = "G",
-        HoldToInteract = false,
-        Flag = "Keybind1", 
-        Callback = function(Keybind)
-            if MyCarPath == nil then
-                alert("Please detect Car first!", "Alert", "triangle-alert")
-                return
-            end
-            task.spawn(function()
-	            local base = MyCarPath.Body.Base
-                while base.AssemblyLinearVelocity.Magnitude > 1 do
-                    base.AssemblyLinearVelocity = Vector3.new(0,0,0)
-		    task.wait()
-                end
-            end)
         end,
     })
     local CarFlySpeed = Tab3:CreateSlider({
@@ -286,7 +264,6 @@ pcall(function()
             running = Value
             if running then
                 task.spawn(function()
-                    IsOnCarFly = not IsOnCarFly
                     while running do
                         pcall(function()
                             local c0 = MyCarPath.DriverSeat
@@ -312,7 +289,7 @@ pcall(function()
     local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
     local ResetWheelsKB = Tab4:CreateKeybind({
        Name = "Reset Wheels ",
-       CurrentKeybind = "t",
+       CurrentKeybind = "T",
        HoldToInteract = false,
        Flag = "Keybind2",
        Callback = function(Keybind)
@@ -365,6 +342,25 @@ pcall(function()
        Flag = "Keybind4",
        Callback = function(Keybind)
             CarFlyToggle:Set(not IsOnCarSpeed)
+        end,
+    })
+    local InstantBrake = Tab:CreateKeybind({
+        Name = "Instant Brake",
+        CurrentKeybind = "Y",
+        HoldToInteract = false,
+        Flag = "Keybind1", 
+        Callback = function(Keybind)
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
+            task.spawn(function()
+	            local base = MyCarPath.Body.Base
+                while base.AssemblyLinearVelocity.Magnitude > 1 do
+                    base.AssemblyLinearVelocity = Vector3.new(0,0,0)
+		    task.wait()
+                end
+            end)
         end,
     })
 end)
