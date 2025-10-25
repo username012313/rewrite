@@ -4,6 +4,7 @@ pcall(function()
     local VehicleFolder = workspace.Vehicles
     local desiredLength = 0
     local MyCarPath = nil
+    local Carspeed = 100
     local function findPlayerVehicle()
         for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
             local controlValues = vehicle:FindFirstChild("Control_Values")
@@ -212,12 +213,29 @@ pcall(function()
             MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
        end,
     })
+
+
     local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
+    local Carspeed = Tab3:CreateSlider({
+       Name = "fly speed",
+       Range = {0, 100},
+       Increment = 0.1,
+       Suffix = "",
+       CurrentValue = 0,
+       Flag = "Slider1", 
+       Callback = function(Value)
+            Carspeed = Value * 10
+       end,
+    })
     local CarSpeedToggle = Tab3:CreateToggle({
         Name = "Enable fixed carspeed",
         CurrentValue = false,
         Flag = "Toggle2",
         Callback = function(Value)
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
             running = Value
             if running then
                 local seat = MyCarPath.DriverSeat
@@ -237,6 +255,10 @@ pcall(function()
        HoldToInteract = false,
        Flag = "Keybind1", 
        Callback = function(Keybind)
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
             task.spawn(function()
 	            local base = MyCarPath.Body.Base
                 base.AssemblyLinearVelocity = Vector3.new(0,0,0)
