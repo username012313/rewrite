@@ -5,14 +5,12 @@ pcall(function()
     local desiredLength = 0
     local MyCarPath = nil
     local Carspeed = 100
+    local IsOnCarFly = false
+    local IsOnCarSpeed = false
     local function findPlayerVehicle()
-        for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
-            local controlValues = vehicle:FindFirstChild("Control_Values")
-            local owner = controlValues and controlValues:FindFirstChild("Owner")
-            if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
-                MyCarPath = vehicle
-            end
-        end
+        local 1 = workspace:WaitForChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart
+        local 2 = 1.Parent
+        MyCarPath = 2
     end
     local function alert(msg, type, icon)
         RAYFIELD:Notify({
@@ -33,7 +31,7 @@ pcall(function()
         DisableRayfieldPrompts = false,
        DisableBuildWarnings = false, 
         ConfigurationSaving = {
-          Enabled = true,
+          Enabled = false,
           FolderName = nil, 
           FileName = "Big Hub"
        },
@@ -236,6 +234,7 @@ pcall(function()
                 alert("Please detect Car first!", "Alert", "triangle-alert")
                 return
             end
+            IsOnCarSpeed = not IsOnCarSpeed
             running = Value
             if running then
                 local seat = MyCarPath.DriverSeat
@@ -287,6 +286,7 @@ pcall(function()
             running = Value
             if running then
                 task.spawn(function()
+                    IsOnCarFly = not IsOnCarFly
                     while running do
                         pcall(function()
                             local c0 = MyCarPath.DriverSeat
@@ -307,6 +307,64 @@ pcall(function()
                 c0.Flip.P = 0
                 c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
             end
+        end,
+    })
+    local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
+    local ResetWheelsKB = Tab:CreateKeybind({
+       Name = "Reset Wheels ",
+       CurrentKeybind = "t",
+       HoldToInteract = false,
+       Flag = "Keybind2",
+       Callback = function(Keybind)
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
+            MyCarPath.Wheels.FL.Spring.MaxLength = 0
+            MyCarPath.Wheels.FR.Spring.MaxLength = 0
+            MyCarPath.Wheels.RL.Spring.MaxLength = 0
+            MyCarPath.Wheels.RR.Spring.MaxLength = 0
+            MyCarPath.Wheels.FL.Spring.MinLength = -0.1
+            MyCarPath.Wheels.FR.Spring.MinLength = -0.1
+            MyCarPath.Wheels.RL.Spring.MinLength = -0.1
+            MyCarPath.Wheels.RR.Spring.MinLength = -0.1
+	        task.wait(0.1)
+            MyCarPath.Wheels.FL.Spring.LimitsEnabled = false
+            MyCarPath.Wheels.FR.Spring.LimitsEnabled = false
+            MyCarPath.Wheels.RL.Spring.LimitsEnabled = false
+            MyCarPath.Wheels.RR.Spring.LimitsEnabled = false
+            task.wait(0.1)
+            MyCarPath.Wheels.FL.Spring.MaxLength = 1.9
+            MyCarPath.Wheels.FR.Spring.MaxLength = 1.9
+            MyCarPath.Wheels.RL.Spring.MaxLength = 1.9
+            MyCarPath.Wheels.RR.Spring.MaxLength = 1.9
+            MyCarPath.Wheels.FL.Spring.MinLength = 2
+            MyCarPath.Wheels.FR.Spring.MinLength = 2
+            MyCarPath.Wheels.RL.Spring.MinLength = 2
+            MyCarPath.Wheels.RR.Spring.MinLength = 2
+            task.wait(0.1)
+            MyCarPath.Wheels.FL.Spring.LimitsEnabled = true
+            MyCarPath.Wheels.FR.Spring.LimitsEnabled = true
+            MyCarPath.Wheels.RL.Spring.LimitsEnabled = true
+            MyCarPath.Wheels.RR.Spring.LimitsEnabled = true
+        end,
+    })
+    local CarFlyKB = Tab:CreateKeybind({
+       Name = "Turn on/off car fly ",
+       CurrentKeybind = "G",
+       HoldToInteract = false,
+       Flag = "Keybind2",
+       Callback = function(Keybind)
+            CarFlyToggle:Set(not IsOnCarFly)
+        end,
+    })
+    local CarSpeedKB = Tab:CreateKeybind({
+       Name = "Turn on/off car Speed ",
+       CurrentKeybind = "V",
+       HoldToInteract = false,
+       Flag = "Keybind2",
+       Callback = function(Keybind)
+            CarFlyToggle:Set(not IsOnCarSpeed)
         end,
     })
 end)
