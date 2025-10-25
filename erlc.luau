@@ -59,6 +59,32 @@ local Button = Tab:CreateButton({
         findPlayerVehicle()
    end,
 })
+local ResetWheels = Tab:CreateButton({
+   Name = "Reset wheels (Useful for RP trolling)",
+   Callback = function()
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        MyCarPath.Wheels.FL.Spring.MaxLength = -2
+        MyCarPath.Wheels.FR.Spring.MaxLength = -2
+        MyCarPath.Wheels.FL.Spring.MinLength = -2
+        MyCarPath.Wheels.FR.Spring.MinLength = -2
+        MyCarPath.Wheels.RL.Spring.MaxLength = -2
+        MyCarPath.Wheels.RR.Spring.MaxLength = -2
+        MyCarPath.Wheels.RL.Spring.MinLength = -2
+        MyCarPath.Wheels.RR.Spring.MinLength = -2
+        task.wait(0.1)
+        MyCarPath.Wheels.FL.Spring.MaxLength = 2
+        MyCarPath.Wheels.FR.Spring.MaxLength = 2
+        MyCarPath.Wheels.FL.Spring.MinLength = 2
+        MyCarPath.Wheels.FR.Spring.MinLength = 2
+        MyCarPath.Wheels.RL.Spring.MaxLength = 2
+        MyCarPath.Wheels.RR.Spring.MaxLength = 2
+        MyCarPath.Wheels.RL.Spring.MinLength = 2
+        MyCarPath.Wheels.RR.Spring.MinLength = 2
+   end,
+})
 local RoughHeight = Tab:CreateSlider({
    Name = "Set height rough",
    Range = {0, 25},
