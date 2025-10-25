@@ -5,15 +5,13 @@ pcall(function()
     local desiredLength = 0
     local MyCarPath = nil
     local Carspeed = 100
-	local function findPlayerVehicle()
-    	for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
-       		local controlValues = vehicle:FindFirstChild("Control_Values")
-        	local owner = controlValues and controlValues:FindFirstChild("Owner")
-        	if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
-            	MyCarPath = vehicle
-        	end
-    	end
-	end
+    local IsOnCarFly = false
+    local IsOnCarSpeed = false
+    local function findPlayerVehicle()
+        local 1 = workspace:WaitForChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart
+        local 2 = 1.Parent
+        MyCarPath = 2
+    end
     local function alert(msg, type, icon)
         RAYFIELD:Notify({
             Title = type,
@@ -55,6 +53,9 @@ pcall(function()
     })
 
     local Tab = MAINUI:CreateTab("Main", "atom")
+    if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.MainHUD.Options.Privateserver.Visible == true then
+	    local Label = Tab:CreateLabel("You are in a private server.", "info", Color3.fromRGB(255, 255, 255), false)
+    end
     local Button = Tab:CreateButton({
        Name = "Detect Car",
        Callback = function()
@@ -236,6 +237,7 @@ pcall(function()
                 alert("Please detect Car first!", "Alert", "triangle-alert")
                 return
             end
+            IsOnCarSpeed = not IsOnCarSpeed
             running = Value
             if running then
                 local seat = MyCarPath.DriverSeat
@@ -247,6 +249,25 @@ pcall(function()
 		            end
                 end)
             end
+        end,
+    })
+    local InstantBrake = Tab:CreateKeybind({
+        Name = "Instant Brake",
+        CurrentKeybind = "G",
+        HoldToInteract = false,
+        Flag = "Keybind1", 
+        Callback = function(Keybind)
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
+            task.spawn(function()
+	            local base = MyCarPath.Body.Base
+                while base.AssemblyLinearVelocity.Magnitude > 1 do
+                    base.AssemblyLinearVelocity = Vector3.new(0,0,0)
+		    task.wait()
+                end
+            end)
         end,
     })
     local CarFlySpeed = Tab3:CreateSlider({
@@ -267,6 +288,7 @@ pcall(function()
         Callback = function(Value)
             running = Value
             if running then
+            IsOnCarFly = not IsOnCarFly
                 task.spawn(function()
                     while running do
                         pcall(function()
@@ -336,7 +358,11 @@ pcall(function()
        HoldToInteract = false,
        Flag = "Keybind3",
        Callback = function(Keybind)
-            CarFlyToggle:Set(not IsOnCarFly)
+            if IsOncarFly == true then
+                CarFlyToggle:Set(false)
+            else
+                CarFlyToggle:Set(true)
+            end
         end,
     })
     local CarSpeedKB = Tab4:CreateKeybind({
@@ -345,26 +371,11 @@ pcall(function()
        HoldToInteract = false,
        Flag = "Keybind4",
        Callback = function(Keybind)
-            CarFlyToggle:Set(not IsOnCarSpeed)
-        end,
-    })
-    local InstantBrake = Tab:CreateKeybind({
-        Name = "Instant Brake",
-        CurrentKeybind = "Y",
-        HoldToInteract = false,
-        Flag = "Keybind1", 
-        Callback = function(Keybind)
-            if MyCarPath == nil then
-                alert("Please detect Car first!", "Alert", "triangle-alert")
-                return
+            if IsOnCarSpeed == true then
+                CarSpeedToggle:Set(false)
+            else
+                CarSpeedToggle:Set(true)
             end
-            task.spawn(function()
-	            local base = MyCarPath.Body.Base
-                while base.AssemblyLinearVelocity.Magnitude > 1 do
-                    base.AssemblyLinearVelocity = Vector3.new(0,0,0)
-		    task.wait()
-                end
-            end)
         end,
     })
 end)
