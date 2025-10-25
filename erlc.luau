@@ -310,7 +310,7 @@ pcall(function()
         end,
     })
     local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
-    local ResetWheelsKB = Tab:CreateKeybind({
+    local ResetWheelsKB = Tab4:CreateKeybind({
        Name = "Reset Wheels ",
        CurrentKeybind = "t",
        HoldToInteract = false,
@@ -349,20 +349,20 @@ pcall(function()
             MyCarPath.Wheels.RR.Spring.LimitsEnabled = true
         end,
     })
-    local CarFlyKB = Tab:CreateKeybind({
+    local CarFlyKB = Tab4:CreateKeybind({
        Name = "Turn on/off car fly ",
        CurrentKeybind = "G",
        HoldToInteract = false,
-       Flag = "Keybind2",
+       Flag = "Keybind3",
        Callback = function(Keybind)
             CarFlyToggle:Set(not IsOnCarFly)
         end,
     })
-    local CarSpeedKB = Tab:CreateKeybind({
+    local CarSpeedKB = Tab4:CreateKeybind({
        Name = "Turn on/off car Speed ",
        CurrentKeybind = "V",
        HoldToInteract = false,
-       Flag = "Keybind2",
+       Flag = "Keybind4",
        Callback = function(Keybind)
             CarFlyToggle:Set(not IsOnCarSpeed)
         end,
