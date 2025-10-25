@@ -217,15 +217,15 @@ pcall(function()
 
     local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
     local Carspeed = Tab3:CreateSlider({
-       Name = "fly speed",
-       Range = {0, 100},
-       Increment = 0.1,
-       Suffix = "",
-       CurrentValue = 0,
-       Flag = "Slider1", 
-       Callback = function(Value)
+        Name = "Car speed",
+        Range = {0, 100},
+        Increment = 0.1,
+        Suffix = "",
+        CurrentValue = 0,
+        Flag = "Slider1", 
+        Callback = function(Value)
             Carspeed = Value * 10
-       end,
+        end,
     })
     local CarSpeedToggle = Tab3:CreateToggle({
         Name = "Enable fixed carspeed",
@@ -249,32 +249,35 @@ pcall(function()
             end
         end,
     })
-    local InstantBrake = Tab3:CreateKeybind({
-       Name = "Instant Brake",
-       CurrentKeybind = "G",
-       HoldToInteract = false,
-       Flag = "Keybind1", 
-       Callback = function(Keybind)
+    local InstantBrake = Tab:CreateKeybind({
+        Name = "Instant Brake",
+        CurrentKeybind = "G",
+        HoldToInteract = false,
+        Flag = "Keybind1", 
+        Callback = function(Keybind)
             if MyCarPath == nil then
                 alert("Please detect Car first!", "Alert", "triangle-alert")
                 return
             end
             task.spawn(function()
 	            local base = MyCarPath.Body.Base
-                base.AssemblyLinearVelocity = Vector3.new(0,0,0)
+                while base.AssemblyLinearVelocity.Magnitude > 1 do
+                    base.AssemblyLinearVelocity = Vector3.new(0,0,0)
+		    task.wait()
+                end
             end)
-       end,
+        end,
     })
     local CarFlySpeed = Tab3:CreateSlider({
-       Name = "fly speed",
-       Range = {0, 100},
-       Increment = 0.1,
-       Suffix = "",
-       CurrentValue = 0,
-       Flag = "Slider1", 
-       Callback = function(Value)
+        Name = "Car Fly speed",
+        Range = {0, 100},
+        Increment = 0.1,
+        Suffix = "",
+        CurrentValue = 0,
+        Flag = "Slider1", 
+        Callback = function(Value)
             c3 = Value * 10
-       end,
+        end,
     })
     local CarFlyToggle = Tab3:CreateToggle({
         Name = "Enable Car Fly",
