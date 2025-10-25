@@ -60,29 +60,39 @@ local Button = Tab:CreateButton({
    end,
 })
 local ResetWheels = Tab:CreateButton({
-   Name = "Reset wheels (Useful for RP trolling)",
-   Callback = function()
+   Name = "Reset Wheels (useful for RP servers)",     
+   Callback = function(Value)
         if MyCarPath == nil then
             alert("Please detect Car first!", "Alert", "triangle-alert")
             return
         end
-        MyCarPath.Wheels.FL.Spring.MaxLength = -2
-        MyCarPath.Wheels.FR.Spring.MaxLength = -2
-        MyCarPath.Wheels.FL.Spring.MinLength = -2
-        MyCarPath.Wheels.FR.Spring.MinLength = -2
-        MyCarPath.Wheels.RL.Spring.MaxLength = -2
-        MyCarPath.Wheels.RR.Spring.MaxLength = -2
-        MyCarPath.Wheels.RL.Spring.MinLength = -2
-        MyCarPath.Wheels.RR.Spring.MinLength = -2
+        MyCarPath.Wheels.FL.Spring.MaxLength = 0
+        MyCarPath.Wheels.FR.Spring.MaxLength = 0
+        MyCarPath.Wheels.RL.Spring.MaxLength = 0
+        MyCarPath.Wheels.RR.Spring.MaxLength = 0
+        MyCarPath.Wheels.FL.Spring.MinLength = -0.1
+        MyCarPath.Wheels.FR.Spring.MinLength = -0.1
+        MyCarPath.Wheels.RL.Spring.MinLength = -0.1
+        MyCarPath.Wheels.RR.Spring.MinLength = -0.1
+	    task.wait(0.1)
+        MyCarPath.Wheels.FL.Spring.LimitsEnabled = false
+        MyCarPath.Wheels.FR.Spring.LimitsEnabled = false
+        MyCarPath.Wheels.RL.Spring.LimitsEnabled = false
+        MyCarPath.Wheels.RR.Spring.LimitsEnabled = false
         task.wait(0.1)
-        MyCarPath.Wheels.FL.Spring.MaxLength = 2
-        MyCarPath.Wheels.FR.Spring.MaxLength = 2
+        MyCarPath.Wheels.FL.Spring.MaxLength = 1.9
+        MyCarPath.Wheels.FR.Spring.MaxLength = 1.9
+        MyCarPath.Wheels.RL.Spring.MaxLength = 1.9
+        MyCarPath.Wheels.RR.Spring.MaxLength = 1.9
         MyCarPath.Wheels.FL.Spring.MinLength = 2
         MyCarPath.Wheels.FR.Spring.MinLength = 2
-        MyCarPath.Wheels.RL.Spring.MaxLength = 2
-        MyCarPath.Wheels.RR.Spring.MaxLength = 2
         MyCarPath.Wheels.RL.Spring.MinLength = 2
         MyCarPath.Wheels.RR.Spring.MinLength = 2
+        task.wait(0.1)
+        MyCarPath.Wheels.FL.Spring.LimitsEnabled = true
+        MyCarPath.Wheels.FR.Spring.LimitsEnabled = true
+        MyCarPath.Wheels.RL.Spring.LimitsEnabled = true
+        MyCarPath.Wheels.RR.Spring.LimitsEnabled = true
    end,
 })
 local RoughHeight = Tab:CreateSlider({
