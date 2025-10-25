@@ -216,13 +216,13 @@ pcall(function()
 
 
     local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
-    local Carspeed = Tab3:CreateSlider({
+    local CarspeedSlider = Tab3:CreateSlider({
         Name = "Car speed",
         Range = {0, 100},
         Increment = 0.1,
         Suffix = "",
         CurrentValue = 0,
-        Flag = "Slider1", 
+        Flag = "Slider4", 
         Callback = function(Value)
             Carspeed = Value * 10
         end,
@@ -230,7 +230,7 @@ pcall(function()
     local CarSpeedToggle = Tab3:CreateToggle({
         Name = "Enable fixed carspeed",
         CurrentValue = false,
-        Flag = "Toggle2",
+        Flag = "Toggle3",
         Callback = function(Value)
             if MyCarPath == nil then
                 alert("Please detect Car first!", "Alert", "triangle-alert")
@@ -242,7 +242,7 @@ pcall(function()
                 local base = MyCarPath.Body.Base
                 task.spawn(function()
 		            while running do
-                	    base.AssemblyLinearVelocity = seat.CFrame.LookVector * Carspeed
+                	    seat.AssemblyLinearVelocity = seat.CFrame.LookVector * Carspeed
 			            task.wait()
 		            end
                 end)
@@ -274,7 +274,7 @@ pcall(function()
         Increment = 0.1,
         Suffix = "",
         CurrentValue = 0,
-        Flag = "Slider1", 
+        Flag = "Slider4", 
         Callback = function(Value)
             c3 = Value * 10
         end,
@@ -282,7 +282,7 @@ pcall(function()
     local CarFlyToggle = Tab3:CreateToggle({
         Name = "Enable Car Fly",
         CurrentValue = false,
-        Flag = "Toggle2",
+        Flag = "Toggle4",
         Callback = function(Value)
             running = Value
             if running then
