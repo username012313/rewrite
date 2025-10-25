@@ -5,11 +5,15 @@ pcall(function()
     local desiredLength = 0
     local MyCarPath = nil
     local Carspeed = 100
-    local function findPlayerVehicle()
-        local 1 = workspace:WaitForChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart
-        local 2 = 1.Parent
-        MyCarPath = 2
-    end
+	local function findPlayerVehicle()
+    	for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
+       		local controlValues = vehicle:FindFirstChild("Control_Values")
+        	local owner = controlValues and controlValues:FindFirstChild("Owner")
+        	if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
+            	MyCarPath = vehicle
+        	end
+    	end
+	end
     local function alert(msg, type, icon)
         RAYFIELD:Notify({
             Title = type,
