@@ -295,19 +295,21 @@ local CarFlyToggle = Tab3:CreateToggle({
             IsOnCarFly = not IsOnCarFly
             task.spawn(function()
                 while running do
-                    pcall(function()
-                        local c0 = MyCarPath.DriverSeat
-                        local c1 = MyCarPath.PrimaryPart
-                        local cRot = c1.CFrame - c1.CFrame.Position
-                        local c2 = workspace.CurrentCamera.CFrame.LookVector
-                        c1.AssemblyLinearVelocity = c2 * c3 + Vector3.new(0, 2, 0)
-                        c0.Flip.D = 100000
-                        c0.Flip.P = 100000
-                        c0.Flip.MaxTorque = Vector3.new(100000, 1000, 100000)
-                        local camCF = workspace.CurrentCamera.CFrame
-                        c0.Flip.CFrame = CFrame.new(c0.Position, c0.Position + camCF.LookVector)
-                    end)
-                    task.wait()
+                    if c3 < 2 then
+                        MyCarPath.PrimaryPart.Anchored = true
+                    else
+                        pcall(function()
+                            local c0 = MyCarPath.DriverSeat
+                            local c1 = MyCarPath.PrimaryPart
+                            local c2 = workspace.CurrentCamera.CFrame.LookVector
+                            c1.AssemblyLinearVelocity = c2 * c3 + Vector3.new(0, 2, 0)
+                            c0.Flip.D = 100000
+                            c0.Flip.P = 100000
+                            c0.Flip.MaxTorque = Vector3.new(100000, 1000, 100000)
+                            c0.Flip.CFrame = CFrame.new(c0.Position, c0.Position + c2)
+                        end)
+                        task.wait()
+                    end
                 end
             end)
         else
