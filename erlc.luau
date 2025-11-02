@@ -503,7 +503,7 @@ local EjectAllPlayers = Tab4:CreateButton({
         end)
     end,
 })
-local PlayerSpeedToggle = Tab4:CreateToggle({
+local AutoDetectCarToggle = Tab4:CreateToggle({
     Name = "Auto detect Car",
     CurrentValue = false,
     Flag = "Toggle1",
