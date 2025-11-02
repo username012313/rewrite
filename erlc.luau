@@ -43,7 +43,7 @@ local function findPlayerVehicle()
                     end
                 end)
                 if not ok then 
-                    alert("Could not find car! Maybe car is not yet spawned.", "Alert!", "alert")
+                    alert("Could not find car! Maybe car is not yet spawned.", "Alert!", "circle-alert")
                 end
             end
         end
@@ -501,5 +501,21 @@ local EjectAllPlayers = Tab4:CreateButton({
                 end
             end)
         end)
+    end,
+})
+local AutoDetectCarToggle = Tab4:CreateToggle({
+    Name = "Auto detect Car",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        running = Value
+        if running then
+            MyCarPath.Destroying:Connect(function()
+                if MyCarPath == nil then
+                    findPlayerVehicle()
+                    alert("Found Car!", "Info", "info")
+                end
+            end)
+        end
     end,
 })
