@@ -503,21 +503,3 @@ local EjectAllPlayers = Tab4:CreateButton({
         end)
     end,
 })
-local AutoDetectCarToggle = Tab4:CreateToggle({
-    Name = "Auto detect Car",
-    CurrentValue = false,
-    Flag = "Toggle1",
-    Callback = function(Value)
-        running = Value
-        if running then
-            MyCarPath.Destroying:Connect(function()
-                if MyCarPath == nil then
-                    findPlayerVehicle()
-                    alert("Found Car!", "Info", "info")
-                end
-            end)
-        end
-    end,
-})
-local Tab5 = MAINUI:CreateTab("Other", "bug")
-local CarNameLabel = Tab:CreateLabel("Current Car Name: PlaceHolder", 4483362458, Color3.fromRGB(255, 255, 255), false) 
