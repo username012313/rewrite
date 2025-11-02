@@ -364,10 +364,10 @@ local CarFlyKB = Tab4:CreateKeybind({
     Callback = function(Keybind)
         if IsOncarFly == true then
             CarFlyToggle:Set(false)
-            IsOncarFly == false
+            IsOncarFly = false
         else
             CarFlyToggle:Set(true)
-            IsOncarFly == true
+            IsOncarFly = true
         end
     end,
 })
@@ -379,10 +379,10 @@ local CarSpeedKB = Tab4:CreateKeybind({
     Callback = function(Keybind)
         if IsOnCarSpeed == true then
             CarSpeedToggle:Set(false)
-            IsOnCarSpeed == false
+            IsOnCarSpeed = false
         else
             CarSpeedToggle:Set(true)
-            IsOnCarSpeed == true
+            IsOnCarSpeed = true
         end
     end,
 })
