@@ -27,6 +27,7 @@ local function findPlayerVehicle()
                 pcall(function()
                     alert("Car detected is is not yours: "..p.Parent.Name, "Info", "info")
                     MyCarPath = p.Parent
+                    CarNameLabel:Set("Current Car Name"..MyCarPath.Name, "bug", Color3.fromRGB(255, 255, 255), false)
                 end)
             else
                 MyCarPath = p.Parent
@@ -38,6 +39,7 @@ local function findPlayerVehicle()
                 local ok, err = pcall(function()
                     if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
                         MyCarPath = vehicle
+                        CarNameLabel:Set("Current Car Name"..MyCarPath.Name, "bug", Color3.fromRGB(255, 255, 255), false)
                     end
                 end)
                 if not ok then 
@@ -55,8 +57,8 @@ local MAINUI = RAYFIELD:CreateWindow({
     ShowText = "", 
     Theme = "Default", 
     ToggleUIKeybind = "K", 
-    DisableRayfieldPrompts = false,
-    DisableBuildWarnings = false, 
+    DisableRayfieldPrompts = true,
+    DisableBuildWarnings = true, 
     ConfigurationSaving = {
         Enabled = false,
         FolderName = nil, 
@@ -69,13 +71,13 @@ local MAINUI = RAYFIELD:CreateWindow({
     },
     KeySystem = false, 
     KeySettings = {
-        Title = "",
+        Title = "Key system",
         Subtitle = "",
-        Note = "", 
+        Note = "ask me for keys", 
         FileName = "1", 
-        SaveKey = true, 
+        SaveKey = false, 
         GrabKeyFromSite = false, 
-        Key = {""} 
+        Key = {"abc"} 
     }
 })
 local Tab = MAINUI:CreateTab("Main", "atom")
@@ -198,6 +200,40 @@ local SuspensionLimits = Tab:CreateToggle({
         MyCarPath.Wheels.RR.Spring.LimitsEnabled = Value
 end,
 })
+local PlayerLabel = Tab:CreateLabel("Player Stuff", 4483362458, Color3.fromRGB(255, 255, 255), false) 
+local PlayerSpeedSlider = Tab:CreateSlider({
+    Name = "Player walkspeed",
+    Range = {0, 100},
+    Increment = 1,
+    Suffix = "",
+    CurrentValue = 0,
+    Flag = "Slider4", 
+    Callback = function(Value)
+        p1 = Value / 10
+    end,
+})
+local PlayerSpeedToggle = Tab:CreateToggle({
+    Name = "Enable Player Walkspeed",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        running = Value
+        if running then
+            local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
+            local hrp = char.HumanoidRootPart
+            local hum = char.Humanoid
+            task.spawn(function()
+                while running and char and hum and hrp do
+                    local dir = hum.MoveDirection
+                    if dir.Magnitude > 0 then
+                        hrp.CFrame = hrp.CFrame + (dir * p1)
+                    end
+                    task.wait() 
+                end
+            end)
+        end
+    end,
+})
 local Tab2 = MAINUI:CreateTab("Second Tab", "atom")
 local desiredHeight = Tab2:CreateSlider({
     Name = "Set desired Height",
@@ -245,7 +281,7 @@ local frontSet = Tab2:CreateButton({
 local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
 local CarspeedSlider = Tab3:CreateSlider({
     Name = "Car speed",
-    Range = {0, 100},
+    Range = {0, 200},
     Increment = 0.1,
     Suffix = "",
     CurrentValue = 0,
@@ -279,7 +315,7 @@ local CarSpeedToggle = Tab3:CreateToggle({
 })
 local CarFlySpeed = Tab3:CreateSlider({
     Name = "Car Fly speed",
-    Range = {0, 100},
+    Range = {0, 200},
     Increment = 0.1,
     Suffix = "",
     CurrentValue = 0,
@@ -305,6 +341,7 @@ local CarFlyToggle = Tab3:CreateToggle({
                             local c0 = MyCarPath.DriverSeat
                             local c1 = MyCarPath.PrimaryPart
                             local c2 = workspace.CurrentCamera.CFrame.LookVector
+                            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
                             c1.AssemblyLinearVelocity = c2 * c3 + Vector3.new(0, 2, 0)
                             c0.Flip.D = 100000
                             c0.Flip.P = 100000
@@ -316,45 +353,12 @@ local CarFlyToggle = Tab3:CreateToggle({
                 end
             end)
         else
+            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
             local c0 = MyCarPath.DriverSeat
             c0.Flip.D = 0
             c0.Flip.P = 0
             c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
             c0.Flip.CFrame = CFrame.new(0,0,0)
-        end
-    end,
-})
-local Tab3half = MAINUI:CreateTab("Player", "atom")
-local PlayerSpeedSlider = Tab3half:CreateSlider({
-    Name = "Player walkspeed",
-    Range = {0, 100},
-    Increment = 1,
-    Suffix = "",
-    CurrentValue = 0,
-    Flag = "Slider4", 
-    Callback = function(Value)
-        p1 = Value / 10
-    end,
-})
-local PlayerSpeedToggle = Tab3half:CreateToggle({
-    Name = "Enable Player Walkspeed",
-    CurrentValue = false,
-    Flag = "Toggle1",
-    Callback = function(Value)
-        running = Value
-        if running then
-            local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
-            local hrp = char.HumanoidRootPart
-            local hum = char.Humanoid
-            task.spawn(function()
-                while running and char and hum and hrp do
-                    local dir = hum.MoveDirection
-                    if dir.Magnitude > 0 then
-                        hrp.CFrame = hrp.CFrame + (dir * p1)
-                    end
-                    task.wait() 
-                end
-            end)
         end
     end,
 })
@@ -440,18 +444,23 @@ local InstantBrake = Tab4:CreateKeybind({
         end
         task.spawn(function()
             local base = MyCarPath.Body.Base
+            local passedtime = 0
             while base.AssemblyLinearVelocity.Magnitude > 1 do
                 base.AssemblyLinearVelocity = Vector3.new(0,0,0)
                 task.wait()
+                passedtime = passedtime + 1
+                if passedtime > 1 then
+                    break
+                end
             end
         end)
     end,
 })
 local WalkSpeedKB = Tab4:CreateKeybind({
     Name = "Turn on/off WalkSpeed",
-    CurrentKeybind = "F",
+    CurrentKeybind = "C",
     HoldToInteract = false,
-    Flag = "Keybind1", 
+    Flag = "Keybind00", 
     Callback = function(Keybind)
         if IsOnPlayerSpeed == true then
             CarSpeedToggle:Set(false)
@@ -494,3 +503,21 @@ local EjectAllPlayers = Tab4:CreateButton({
         end)
     end,
 })
+local PlayerSpeedToggle = Tab4:CreateToggle({
+    Name = "Auto detect Car",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        running = Value
+        if running then
+            MyCarPath.Destroying:Connect(function()
+                if MyCarPath == nil then
+                    findPlayerVehicle()
+                    alert("Found Car!", "Info", "info")
+                end
+            end)
+        end
+    end,
+})
+local Tab5 = MAINUI:CreateTab("Other", "bug")
+local CarNameLabel = Tab:CreateLabel("Current Car Name: PlaceHolder", 4483362458, Color3.fromRGB(255, 255, 255), false) 
