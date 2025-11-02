@@ -414,5 +414,3 @@ local EjectAllPlayers = Tab4:CreateButton({
         end)
     end,
 })
-local Tab5 = MAINUI:CreateTab("other info", "bug")
-local Info1 = Tab5:CreateLabel("Your car is here: workspace.Vehicles"..MyCarPath.Name, 4483362458, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
