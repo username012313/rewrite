@@ -7,27 +7,40 @@ local Carspeed = 100
 local IsOnCarFly = false
 local IsOnCarSpeed = false
 local PrivateServerLabel
-local function alert(msg, type, icon)
+local function alert(msg, s, icon)
     RAYFIELD:Notify({
-        Title = type,
+        Title = s,
         Content = msg,
         Duration = 3.5,
         Image = icon,
     })
 end
 local function findPlayerVehicle()
-    for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
-        local controlValues = vehicle:FindFirstChild("Control_Values")
-        local owner = controlValues and controlValues:FindFirstChild("Owner")
-        local ok, err = pcall(function()
-            if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
-                MyCarPath = vehicle
+    pcall(function()
+        if workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart then
+            local p = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart
+            local w = p.Parent.Control_Values.Owner.Value
+            if w ~= game:GetService("Players").LocalPlayer.Name then
+                pcall(function()
+                    alert("Detected Car is not yours, Car detected is: "..w.Value, "Info", "info")
+                    MyCarPath = p.Parent
+                end)
             end
-        end)
-        if not ok then 
-            alert("Could not find car! Maybe car is not yet spawned.", "Aler!", "alert")
+        else
+            for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
+                local controlValues = vehicle:FindFirstChild("Control_Values")
+                local owner = controlValues and controlValues:FindFirstChild("Owner")
+                local ok, err = pcall(function()
+                    if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
+                        MyCarPath = vehicle
+                    end
+                end)
+                if not ok then 
+                    alert("Could not find car! Maybe car is not yet spawned.", "Alert!", "alert")
+                end
+            end
         end
-    end
+    end)
 end
 local MAINUI = RAYFIELD:CreateWindow({
     Name = "Rayfield Example Window",
@@ -369,7 +382,7 @@ local CarSpeedKB = Tab4:CreateKeybind({
 })
 local InstantBrake = Tab4:CreateKeybind({
     Name = "Instant Brake",
-    CurrentKeybind = "G",
+    CurrentKeybind = "F",
     HoldToInteract = false,
     Flag = "Keybind1", 
     Callback = function(Keybind)
@@ -396,17 +409,21 @@ local EjectAllPlayers = Tab4:CreateButton({
         task.spawn(function()
             pcall(function ()
                 local seat1 = MyCarPath.PassengerSeatFR
-                local seat2 = MyCarPath.PassengerSeatRL
-                local seat3 = MyCarPath.PassengerSeatRR
+                if MyCarPath.PassengerSeatRL then
+                    local seat2 = MyCarPath.PassengerSeatRL
+                end
+                if MyCarPath.PassengerSeatRR then
+                    local seat3 = MyCarPath.PassengerSeatRR
+                end
                 if seat1.Occupant then
                     local plrName = seat1.Occupant.Parent.Name
                     game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
                 end
-                if seat2.Occupant then
+                if seat2 and seat2.Occupant then
                     local plrName = seat3.Occupant.Parent.Name
                     game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
                 end
-                if seat3.Occupant then
+                if seat3 and seat3.Occupant then
                     local plrName = seat3.Occupant.Parent.Name
                     game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
                 end
