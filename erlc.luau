@@ -333,7 +333,7 @@ local PlayerSpeedSlider = Tab3half:CreateSlider({
     CurrentValue = 0,
     Flag = "Slider4", 
     Callback = function(Value)
-        p1 = Value * 2
+        p1 = Value / 10
     end,
 })
 local PlayerSpeedToggle = Tab3half:CreateToggle({
