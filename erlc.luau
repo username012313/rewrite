@@ -9,6 +9,7 @@ local IsOnCarSpeed = false
 local IsOnPlayerSpeed = false
 local c3 = 10
 local p1 = 10
+local aRadius = 10
 local PrivateServerLabel
 local function alert(msg, s, icon)
     RAYFIELD:Notify({
@@ -501,21 +502,5 @@ local EjectAllPlayers = Tab4:CreateButton({
                 end
             end)
         end)
-    end,
-})
-local AutoDetectCarToggle = Tab4:CreateToggle({
-    Name = "Auto detect Car",
-    CurrentValue = false,
-    Flag = "Toggle1",
-    Callback = function(Value)
-        running = Value
-        if running then
-            MyCarPath.Destroying:Connect(function()
-                if MyCarPath == nil then
-                    findPlayerVehicle()
-                    alert("Found Car!", "Info", "info")
-                end
-            end)
-        end
     end,
 })
