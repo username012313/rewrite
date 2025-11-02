@@ -47,10 +47,10 @@ end
 local MAINUI = RAYFIELD:CreateWindow({
     Name = "Rayfield Example Window",
     Icon = 0,  
-    LoadingTitle = "Rayfield Interface Suite",
-    LoadingSubtitle = "by Sirius",
-    ShowText = "Rayfield", 
-    Theme = "DarkBlue", 
+    LoadingTitle = "Rayfield",
+    LoadingSubtitle = "",
+    ShowText = "", 
+    Theme = "Default", 
         ToggleUIKeybind = "K", 
         DisableRayfieldPrompts = false,
     DisableBuildWarnings = false, 
@@ -304,6 +304,8 @@ local CarFlyToggle = Tab3:CreateToggle({
                         c0.Flip.D = 100000
                         c0.Flip.P = 100000
                         c0.Flip.MaxTorque = Vector3.new(100000, 1000, 100000)
+                        local camCF = workspace.CurrentCamera.CFrame
+                        c0.Flip.CFrame = CFrame.new(c0.Position, c0.Position + camCF.LookVector)
                     end)
                     task.wait()
                 end
@@ -313,6 +315,7 @@ local CarFlyToggle = Tab3:CreateToggle({
             c0.Flip.D = 0
             c0.Flip.P = 0
             c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
+            c0.Flip.CFrame = CFrame.new(0,0,0)
         end
     end,
 })
