@@ -78,10 +78,10 @@ local MAINUI = RAYFIELD:CreateWindow({
         Key = {""} 
     }
 })
-
 if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.MainHUD.Options.PrivateServer.Visible == true then
     PrivateServerLabel = Tab:CreateLabel("You are in a private server.", "info", Color3.fromRGB(255, 255, 255), false)
 end
+local Tab = MAINUI:CreateTab("Main", "atom")
 local Button = Tab:CreateButton({
     Name = "Detect Car",
     Callback = function()
