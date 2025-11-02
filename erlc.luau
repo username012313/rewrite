@@ -6,6 +6,9 @@ local MyCarPath = nil
 local Carspeed = 100
 local IsOnCarFly = false
 local IsOnCarSpeed = false
+local IsOnPlayerSpeed = false
+local c3 = 10
+local p1 = 10
 local PrivateServerLabel
 local function alert(msg, s, icon)
     RAYFIELD:Notify({
@@ -51,20 +54,20 @@ local MAINUI = RAYFIELD:CreateWindow({
     LoadingSubtitle = "",
     ShowText = "", 
     Theme = "Default", 
-        ToggleUIKeybind = "K", 
-        DisableRayfieldPrompts = false,
+    ToggleUIKeybind = "K", 
+    DisableRayfieldPrompts = false,
     DisableBuildWarnings = false, 
-        ConfigurationSaving = {
+    ConfigurationSaving = {
         Enabled = false,
         FolderName = nil, 
         FileName = "Big Hub"
     },
-        Discord = {
+    Discord = {
         Enabled = false, 
         Invite = "noinvitelink", 
         RememberJoins = true 
     },
-        KeySystem = false, 
+    KeySystem = false, 
     KeySettings = {
         Title = "",
         Subtitle = "",
@@ -75,7 +78,7 @@ local MAINUI = RAYFIELD:CreateWindow({
         Key = {""} 
     }
 })
-local Tab = MAINUI:CreateTab("Main", "atom")
+
 if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.MainHUD.Options.PrivateServer.Visible == true then
     PrivateServerLabel = Tab:CreateLabel("You are in a private server.", "info", Color3.fromRGB(255, 255, 255), false)
 end
@@ -321,6 +324,40 @@ local CarFlyToggle = Tab3:CreateToggle({
         end
     end,
 })
+local Tab3half = MAINUI:CreateTab("Player", "atom")
+local PlayerSpeedSlider = Tab3half:CreateSlider({
+    Name = "Player walkspeed",
+    Range = {0, 100},
+    Increment = 1,
+    Suffix = "",
+    CurrentValue = 0,
+    Flag = "Slider4", 
+    Callback = function(Value)
+        p1 = Value * 2
+    end,
+})
+local PlayerSpeedToggle = Tab3half:CreateToggle({
+    Name = "Enable Player Walkspeed",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        running = Value
+        if running then
+            local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
+            local hrp = char.HumanoidRootPart
+            local hum = char.Humanoid
+            task.spawn(function()
+                while running and char and hum and hrp do
+                    local dir = hum.MoveDirection
+                    if dir.Magnitude > 0 then
+                        hrp.CFrame = hrp.CFrame + (dir * p1)
+                    end
+                    task.wait() 
+                end
+            end)
+        end
+    end,
+})
 local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
 local ResetWheelsKB = Tab4:CreateKeybind({
     Name = "Reset Wheels ",
@@ -408,6 +445,21 @@ local InstantBrake = Tab4:CreateKeybind({
                 task.wait()
             end
         end)
+    end,
+})
+local WalkSpeedKB = Tab4:CreateKeybind({
+    Name = "Turn on/off WalkSpeed",
+    CurrentKeybind = "F",
+    HoldToInteract = false,
+    Flag = "Keybind1", 
+    Callback = function(Keybind)
+        if IsOnPlayerSpeed == true then
+            CarSpeedToggle:Set(false)
+            IsOnPlayerSpeed = false
+        else
+            CarSpeedToggle:Set(true)
+            IsOnPlayerSpeed = true
+        end
     end,
 })
 local EjectAllPlayers = Tab4:CreateButton({
