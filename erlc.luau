@@ -19,12 +19,14 @@ local function findPlayerVehicle()
     pcall(function()
         if workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart then
             local p = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Humanoid.SeatPart
-            local w = p.Parent.Control_Values.Owner.Value
-            if w ~= game:GetService("Players").LocalPlayer.Name then
+            local w = p.Parent.Control_Values.Owner
+            if w.Value ~= game:GetService("Players").LocalPlayer.Name then
                 pcall(function()
-                    alert("Detected Car is not yours, Car detected is: "..w.Value, "Info", "info")
+                    alert("Car detected is is not yours: "..p.Parent.Name, "Info", "info")
                     MyCarPath = p.Parent
                 end)
+            else
+                MyCarPath = p.Parent
             end
         else
             for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
@@ -362,8 +364,10 @@ local CarFlyKB = Tab4:CreateKeybind({
     Callback = function(Keybind)
         if IsOncarFly == true then
             CarFlyToggle:Set(false)
+            IsOncarFly == false
         else
             CarFlyToggle:Set(true)
+            IsOncarFly == true
         end
     end,
 })
@@ -375,8 +379,10 @@ local CarSpeedKB = Tab4:CreateKeybind({
     Callback = function(Keybind)
         if IsOnCarSpeed == true then
             CarSpeedToggle:Set(false)
+            IsOnCarSpeed == false
         else
             CarSpeedToggle:Set(true)
+            IsOnCarSpeed == true
         end
     end,
 })
@@ -394,7 +400,7 @@ local InstantBrake = Tab4:CreateKeybind({
             local base = MyCarPath.Body.Base
             while base.AssemblyLinearVelocity.Magnitude > 1 do
                 base.AssemblyLinearVelocity = Vector3.new(0,0,0)
-        task.wait()
+                task.wait()
             end
         end)
     end,
