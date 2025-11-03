@@ -9,6 +9,7 @@ local IsOnCarSpeed = false
 local IsOnPlayerSpeed = false
 local c3 = 10
 local p1 = 10
+local aRadius = 10
 local PrivateServerLabel
 local function alert(msg, s, icon)
     RAYFIELD:Notify({
