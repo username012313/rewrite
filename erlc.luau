@@ -8,7 +8,7 @@ local IsOnCarFly = false
 local IsOnCarSpeed = false
 local IsOnPlayerSpeed = false
 local c3 = 10
-local p1 = 10
+local p1 = 0
 local aRadius = 10
 local PrivateServerLabel
 local function alert(msg, s, icon)
@@ -400,34 +400,28 @@ local CarFlyToggle = Tab3:CreateToggle({
         end
     end,
 })
-local NoClipButton = Tab3:CreateButton({
-    Name = "Disable Car Collision",
-    Callback = function()
+local NoClipToggle = Tab3:CreateToggle({
+    Name = "Enable Car Noclip",
+    CurrentValue = false,
+    Flag = "Toggle4",
+    Callback = function(Value)
+        running = Value
         if MyCarPath == nil then
             alert("Please detect Car first!", "Alert", "triangle-alert")
             return
         end
-        for i,v in ipairs(MyCarPath.Body:GetDescendants()) do
-            if v:IsA("TouchTransmitter") then
-                v:Destroy()
-            end
-            if v:IsA("BasePart") or v:IsA("Part") then
-                v.CanCollide = false
-                v.CanQuery = false
-                v.CanTouch = false
-            end
-        end
-        for i,v in ipairs(workspace.DOTDebris:GetChildren()) do
-            v.CanTouch = false
-            v.CanQuery = false
-            v.CanCollide = false
-        end
-        for i,v in ipairs(workspace.DOT_Tasks:GetDescendants()) do
-            if v:IsA("BasePart") or v:IsA("Part") then
-                v.CanCollide = false
-                v.CanQuery = false
-                v.CanTouch = false
-            end
+        if running then
+            for i,v in ipairs(MyCarPath.Body:GetDescendants()) do
+                if v:IsA("TouchTransmitter") then
+                    v:Destroy()
+                end
+                if v:IsA("BasePart") or v:IsA("Part") then
+                    v.CanCollide = false
+                    v.CanQuery = false
+                    v.CanTouch = false
+                end
+            end 
+        else
         end
     end,
 })
@@ -514,11 +508,18 @@ local InstantBrake = Tab4:CreateKeybind({
         task.spawn(function()
             local base = MyCarPath.Body.Base
             local passedtime = 0
+            local c0 = MyCarPath.DriverSeat
+            c0.Flip.D = 100000
+            c0.Flip.P = 100000
+            c0.Flip.MaxTorque = Vector3.new(100000, 1000, 100000)
             while base.AssemblyLinearVelocity.Magnitude > 1 do
                 base.AssemblyLinearVelocity = Vector3.new(0,0,0)
                 task.wait()
-                passedtime = passedtime + 1
+                passedtime = passedtime + 0.1
                 if passedtime > 1 then
+                    c0.Flip.D = 0
+                    c0.Flip.P = 0
+                    c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
                     break
                 end
             end
