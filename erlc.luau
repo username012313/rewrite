@@ -235,6 +235,34 @@ local PlayerSpeedToggle = Tab:CreateToggle({
         end
     end,
 })
+local PlayerNoClipToggle = Tab:CreateToggle({
+	Name = "Enable Player Noclip",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		running = Value
+		local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
+		while running do
+			for _, v in ipairs(char:GetDescendants()) do
+				if (v:IsA("BasePart") or v:IsA("Part") or v:IsA("MeshPart")) and running then
+					v.CanCollide = false
+					v.CanQuery = false
+					v.CanTouch = false
+				end
+			end
+			task.wait()
+		end
+		if not running then
+			for _, v in ipairs(char:GetDescendants()) do
+				if (v:IsA("BasePart") or v:IsA("Part") or v:IsA("MeshPart")) and not running then
+					v.CanCollide = true
+					v.CanQuery = true
+					v.CanTouch = true
+				end
+			end
+		end
+	end,
+})
 local Tab2 = MAINUI:CreateTab("Second Tab", "atom")
 local desiredHeight = Tab2:CreateSlider({
     Name = "Set desired Height",
@@ -330,6 +358,10 @@ local CarFlyToggle = Tab3:CreateToggle({
     Callback = function(Value)
         running = Value
         if running then
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
             IsOnCarFly = not IsOnCarFly
             task.spawn(function()
                 while running do
@@ -354,6 +386,10 @@ local CarFlyToggle = Tab3:CreateToggle({
                 end
             end)
         else
+            if MyCarPath == nil then
+                alert("Please detect Car first!", "Alert", "triangle-alert")
+                return
+            end
             MyCarPath.PrimaryPart.Anchored = false
             workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
             local c0 = MyCarPath.DriverSeat
@@ -361,6 +397,37 @@ local CarFlyToggle = Tab3:CreateToggle({
             c0.Flip.P = 0
             c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
             c0.Flip.CFrame = CFrame.new(0,0,0)
+        end
+    end,
+})
+local NoClipButton = Tab3:CreateButton({
+    Name = "Disable Car Collision",
+    Callback = function()
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        for i,v in ipairs(MyCarPath.Body:GetDescendants()) do
+            if v:IsA("TouchTransmitter") then
+                v:Destroy()
+            end
+            if v:IsA("BasePart") or v:IsA("Part") then
+                v.CanCollide = false
+                v.CanQuery = false
+                v.CanTouch = false
+            end
+        end
+        for i,v in ipairs(workspace.DOTDebris:GetChildren()) do
+            v.CanTouch = false
+            v.CanQuery = false
+            v.CanCollide = false
+        end
+        for i,v in ipairs(workspace.DOT_Tasks:GetDescendants()) do
+            if v:IsA("BasePart") or v:IsA("Part") then
+                v.CanCollide = false
+                v.CanQuery = false
+                v.CanTouch = false
+            end
         end
     end,
 })
@@ -384,10 +451,10 @@ local ResetWheelsKB = Tab4:CreateKeybind({
         MyCarPath.Wheels.RL.Spring.MinLength = -0.1
         MyCarPath.Wheels.RR.Spring.MinLength = -0.1
         task.wait(0.1)
-        MyCarPath.Wheels.FL.Spring.LimitsEnabled = false
-        MyCarPath.Wheels.FR.Spring.LimitsEnabled = false
-        MyCarPath.Wheels.RL.Spring.LimitsEnabled = false
-        MyCarPath.Wheels.RR.Spring.LimitsEnabled = false
+        MyCarPath.Wheels.FL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
+        MyCarPath.Wheels.FR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
+        MyCarPath.Wheels.RL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
+        MyCarPath.Wheels.RR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
         task.wait(0.1)
         MyCarPath.Wheels.FL.Spring.MaxLength = 1.9
         MyCarPath.Wheels.FR.Spring.MaxLength = 1.9
@@ -398,10 +465,10 @@ local ResetWheelsKB = Tab4:CreateKeybind({
         MyCarPath.Wheels.RL.Spring.MinLength = 2
         MyCarPath.Wheels.RR.Spring.MinLength = 2
         task.wait(0.1)
-        MyCarPath.Wheels.FL.Spring.LimitsEnabled = true
-        MyCarPath.Wheels.FR.Spring.LimitsEnabled = true
-        MyCarPath.Wheels.RL.Spring.LimitsEnabled = true
-        MyCarPath.Wheels.RR.Spring.LimitsEnabled = true
+        MyCarPath.Wheels.FL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = false
+        MyCarPath.Wheels.FR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = false
+        MyCarPath.Wheels.RL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = false
+        MyCarPath.Wheels.RR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = false
     end,
 })
 local CarFlyKB = Tab4:CreateKeybind({
