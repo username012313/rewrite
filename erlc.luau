@@ -541,10 +541,10 @@ local WalkSpeedKB = Tab4:CreateKeybind({
     Flag = "Keybind00", 
     Callback = function(Keybind)
         if IsOnPlayerSpeed == true then
-            CarSpeedToggle:Set(false)
+            PlayerSpeedToggle:Set(false)
             IsOnPlayerSpeed = false
         else
-            CarSpeedToggle:Set(true)
+            PlayerSpeedToggle:Set(true)
             IsOnPlayerSpeed = true
         end
     end,
