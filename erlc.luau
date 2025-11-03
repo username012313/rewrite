@@ -335,6 +335,7 @@ local CarFlyToggle = Tab3:CreateToggle({
                 while running do
                     if c3 < 2 then
                         MyCarPath.PrimaryPart.Anchored = true
+                        repeat task.wait() until c3 > 2
                     else
                         pcall(function()
                             MyCarPath.PrimaryPart.Anchored = false
