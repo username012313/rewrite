@@ -235,9 +235,6 @@ local PlayerSpeedToggle = Tab:CreateToggle({
         end
     end,
 })
-[[-- 
-    Back front tab
---]]
 local Tab2 = MAINUI:CreateTab("Second Tab", "atom")
 local desiredHeight = Tab2:CreateSlider({
     Name = "Set desired Height",
@@ -280,9 +277,6 @@ local frontSet = Tab2:CreateButton({
         MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
     end,
 })
-[[-- 
-    Cool Tab
---]]
 local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
 local CarspeedSlider = Tab3:CreateSlider({
     Name = "Car speed",
@@ -388,9 +382,6 @@ local CarFlyToggle = Tab3:CreateToggle({
         end
     end,
 })
-[[-- 
-    Keybind Tab
---]]
 local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
 local ResetWheelsKB = Tab4:CreateKeybind({
     Name = "Reset Wheels ",
