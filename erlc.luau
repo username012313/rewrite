@@ -523,14 +523,9 @@ local InstantBrake = Tab4:CreateKeybind({
                     break
                 end
             end
-            c0.Flip.D = 100000
-            c0.Flip.P = 100000
-            c0.Flip.MaxTorque = Vector3.new(100000, 1000, 100000)
-            if passedtime > 1 then
-                c0.Flip.D = 0
-                c0.Flip.P = 0
-                c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
-            end
+            c0.Flip.D = 0
+            c0.Flip.P = 0
+            c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
         end)
     end,
 })
