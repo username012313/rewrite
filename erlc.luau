@@ -235,6 +235,9 @@ local PlayerSpeedToggle = Tab:CreateToggle({
         end
     end,
 })
+[[-- 
+    Back front tab
+--]]
 local Tab2 = MAINUI:CreateTab("Second Tab", "atom")
 local desiredHeight = Tab2:CreateSlider({
     Name = "Set desired Height",
@@ -277,8 +280,9 @@ local frontSet = Tab2:CreateButton({
         MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
     end,
 })
-
-
+[[-- 
+    Cool Tab
+--]]
 local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
 local CarspeedSlider = Tab3:CreateSlider({
     Name = "Car speed",
@@ -331,38 +335,62 @@ local CarFlyToggle = Tab3:CreateToggle({
     Flag = "Toggle4",
     Callback = function(Value)
         running = Value
+        if MyCarPath == nil then alert("Detect Car first")  return  end
+        local rs = game:GetService("RunService")
+        IsOnCarFly = not IsOnCarFly
         if running then
-            IsOnCarFly = not IsOnCarFly
-            task.spawn(function()
-                while running do
-                    if c3 < 2 then
-                        MyCarPath.PrimaryPart.Anchored = true
-                    else
-                        pcall(function()
-                            local c0 = MyCarPath.DriverSeat
-                            local c1 = MyCarPath.PrimaryPart
-                            local c2 = workspace.CurrentCamera.CFrame.LookVector
-                            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
-                            c1.AssemblyLinearVelocity = c2 * c3 + Vector3.new(0, 2, 0)
-                            c0.Flip.D = 100000
-                            c0.Flip.P = 100000
-                            c0.Flip.MaxTorque = Vector3.new(100000, 1000, 100000)
-                            c0.Flip.CFrame = CFrame.new(c0.Position, c0.Position + c2)
-                        end)
-                        task.wait()
-                    end
+           for i,v in ipairs(game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent:GetDescendants()) do
+                if v:IsA("TouchTransmitter") then v:Destroy() end
+            end
+            game.Workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character:WaitForChild('Humanoid')
+            gyro = Instance.new("BodyGyro")
+            gyro.Parent = game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.Body:FindFirstChild('CollisionPart')
+            gyro.CFrame = game.Workspace.CurrentCamera.CFrame
+            gyro.MaxTorque = Vector3.new(9e9,9e9,9e9)
+            gyro.P = 9e4
+            vel = Instance.new("BodyVelocity")
+            vel.Parent = game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.Body:FindFirstChild('CollisionPart')
+            vel.MaxForce = Vector3.new(9e9,9e9,9e9)
+            vel.P = 9e4
+            vel.Velocity = Vector3.new(0,0,0)
+            repeat task.wait()
+                if not running then return end
+                local toset = Vector3.new(0,0,0)
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.W) then
+                    toset = toset + game.Workspace.CurrentCamera.CFrame.LookVector * 150
+                    task.wait()
                 end
-            end)
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.S) then
+                    toset = toset + game.Workspace.CurrentCamera.CFrame.LookVector * -150
+                    task.wait()
+                end
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.A) then
+                    toset = toset + game.Workspace.CurrentCamera.CFrame.RightVector * -150
+                    task.wait()
+                end
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.D) then
+                    toset = toset + game.Workspace.CurrentCamera.CFrame.RightVector * 150
+                    task.wait()
+                end
+                if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.D)
+                and not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.A)
+                and not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.S)
+                and not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.W)
+                then
+                    toset = Vector3.new(0,0,0)
+                end
+                vel.Velocity = toset
+                gyro.CFrame = game.Workspace.CurrentCamera.CFrame
+            until not game:GetService("Players").LocalPlayer.Character.Humanoid.Sit
         else
-            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
-            local c0 = MyCarPath.DriverSeat
-            c0.Flip.D = 0
-            c0.Flip.P = 0
-            c0.Flip.MaxTorque = Vector3.new(0, 0, 0)
-            c0.Flip.CFrame = CFrame.new(0,0,0)
+            vel:Destroy()
+		    gyro:Destroy()
         end
     end,
 })
+[[-- 
+    Keybind Tab
+--]]
 local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
 local ResetWheelsKB = Tab4:CreateKeybind({
     Name = "Reset Wheels ",
