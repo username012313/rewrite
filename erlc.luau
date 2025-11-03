@@ -201,6 +201,24 @@ local SuspensionLimits = Tab:CreateToggle({
         MyCarPath.Wheels.RR.Spring.LimitsEnabled = Value
 end,
 })
+local SpacerSlider = Tab:CreateSlider({
+    Name = "Set Spacer",
+    Range = {0, 8},
+    Increment = 0.2,
+    Suffix = "",
+    CurrentValue = 0,
+    Flag = "Lift",     
+    Callback = function(Value)
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        MyCarPath.Wheels.FL:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.FL:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
+        MyCarPath.Wheels.FR:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.FR:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
+        MyCarPath.Wheels.RL:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.RL:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
+        MyCarPath.Wheels.RR:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.RR:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
+    end,
+})
 local PlayerLabel = Tab:CreateLabel("Player Stuff", 4483362458, Color3.fromRGB(255, 255, 255), false) 
 local PlayerSpeedSlider = Tab:CreateSlider({
     Name = "Player walkspeed",
