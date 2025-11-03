@@ -219,6 +219,7 @@ local PlayerSpeedToggle = Tab:CreateToggle({
     Flag = "Toggle1",
     Callback = function(Value)
         running = Value
+        IsOnPlayerSpeed = not IsOnPlayerSpeed
         if running then
             local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
             local hrp = char.HumanoidRootPart
