@@ -213,10 +213,10 @@ local SpacerSlider = Tab:CreateSlider({
             alert("Please detect Car first!", "Alert", "triangle-alert")
             return
         end
-        MyCarPath.Wheels.FL:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.FL:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
-        MyCarPath.Wheels.FR:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.FR:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
-        MyCarPath.Wheels.RL:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.RL:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
-        MyCarPath.Wheels.RR:FindFirstChild("#SA").Attach_SA.CFrame = MyCarPath.Wheels.RR:FindFirstChild("#SA").Attach_SA.CFrame + Vector3.new(Value, 0,0)
+        MyCarPath.Wheels.FL:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
+        MyCarPath.Wheels.FR:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
+        MyCarPath.Wheels.RL:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
+        MyCarPath.Wheels.RR:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
     end,
 })
 local PlayerLabel = Tab:CreateLabel("Player Stuff", 4483362458, Color3.fromRGB(255, 255, 255), false) 
