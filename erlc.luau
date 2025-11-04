@@ -1,3 +1,4 @@
+-- identifier ? a
 loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 task.wait(1)
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
