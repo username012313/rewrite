@@ -1,11 +1,11 @@
-if not _G.isAntiBan then
+if not _G.isAntiBan or _G.RanERX and _G.RanERX == true then
     _G.isAntiBan = true
-    repeat task.wait(0.1)
+    while true do
         for i,v in getconnections(game:GetService("ScriptContext").Error) do 
             v:Disconnect() 
             task.wait(0.5)
         end       
-    until true == false
+    end
 else
     return 
 end
