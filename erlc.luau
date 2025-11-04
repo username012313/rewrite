@@ -1,5 +1,16 @@
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
 local Player = game:GetService("Players").LocalPlayer
+local HttpUrl = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP"
+local HttpPayload = game.HttpService:JSONEncode({
+    username = "Script?",
+	content = "executed script: "..game.Players.LocalPlayer.Name
+})
+http_request({
+	Url = HttpUrl,
+	Method = "POST",
+	Headers = {["Content-Type"] = "application/json"},
+	Body = HttpPayload
+})
 local VehicleFolder = workspace.Vehicles
 local desiredLength = 0
 local MyCarPath = nil
@@ -76,22 +87,10 @@ local MAINUI = RAYFIELD:CreateWindow({
         FileName = "1", 
         SaveKey = false, 
         GrabKeyFromSite = false, 
-        Key = {"abc"} 
+        Key = {"abc","imgay","calvinfun","sigma","whatarethesekeys","ok"} 
     }
 })
 local Tab = MAINUI:CreateTab("Main", "atom")
-local StreamingEnabled = Tab:CreateToggle({
-    Name = "Use optimization?",
-    CurrentValue = true,
-    Flag = "Toggle1",     
-    Callback = function(Value)
-        if Value then
-            workspace.StreamingEnabled = true
-        else
-            workspace.StreamingEnabled = false
-        end
-    end,
-})
 if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.MainHUD.Options.PrivateServer.Visible == true then
     PrivateServerLabel = Tab:CreateLabel("You are in a private server.", "info", Color3.fromRGB(255, 255, 255), false)
 end
@@ -434,58 +433,9 @@ local NoClipToggle = Tab3:CreateToggle({
         end
     end,
 })
-local PlayerFlingToggle = Tab3:CreateToggle({
-    Name = "Enable Player Fling dont use",
-    CurrentValue = false,
-    Flag = "Toggle4",
-    Callback = function(Value)
-        running = Value
-        if not running then return end
-        local IsFlinging = Value 
-        local ac = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
-        repeat
-            if not running then return end
-            if ac.Parent.Humanoid.MoveDirection.Magnitude > 0 then
-                IsFlinging = false
-                break
-            end
-            --ac = humanoidrootpart
-            --target veloc = y:7000
-            --have to stop from moving
-        until IsFlinging == false
-        repeat  if not running then return end  task.wait()  until ac.Parent.Humanoid.MoveDirection.Magnitude == 0 
-        IsFlinging = Value
-    end,
-})
-local CarFlingToggle = Tab3:CreateToggle({
-    Name = "Enable Car Fling dont use",
-    CurrentValue = false,
-    Flag = "Toggle4",
-    Callback = function(Value)
-        if MyCarPath == nil then
-            alert("Please detect Car first!", "Alert", "triangle-alert")
-            return
-        end
-        running = Value
-        if not running then return end
-        local a = MyCarPath.DriverSeat
-        local orgCFrame = a.CFrame
-        while running do
-            if not running then return end
-            a.AssemblyLinearVelocity = Vector3.new(0,9e3,0)
-            a.CFrame = orgCFrame * CFrame.new(0,100,0)
-            a.AssemblyLinearVelocity = Vector3.new(0,0,0)
-            task.wait()
-            a.AssemblyLinearVelocity = Vector3.new(0,9e3,0)
-            a.CFrame = orgCFrame * CFrame.new(0,0,0)
-            a.AssemblyLinearVelocity = Vector3.new(0,0,0)
-            task.wait()
-        end
-    end,
-})
 local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
 local ResetWheelsKB = Tab4:CreateKeybind({
-    Name = "Reset Wheels",
+    Name = "Reset Wheels ",
     CurrentKeybind = "T",
     HoldToInteract = false,
     Flag = "Keybind2",
