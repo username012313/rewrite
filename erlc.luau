@@ -2,8 +2,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrit
 task.wait(1)
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
 local Player = game:GetService("Players").LocalPlayer
-local SelectedPlayerToTeleportTo
-local SelectedPlaceToTeleportTo
+local SelectedPlayerToTeleportTo = nil
+local SelectedPlaceToTeleportTo = nil
 if not http_request then 
 	return 
 else
@@ -30,7 +30,7 @@ local IsOnCarSpeed = false
 local IsOnPlayerSpeed = false
 local c3 = 10
 local p1 = 0
-local PrivateServerLabel
+local PrivateServerLabel = nil
 local function alert(msg, s, icon)
 	RAYFIELD:Notify({
 		Title = s,
@@ -261,7 +261,6 @@ local SuspensionLimits = Tab:CreateToggle({
 	end,
 })
 local SuspensionSection = Tab:CreateSection("More")
-local SuspensionDivier = Tab:CreateDivider()
 local desiredHeight = Tab:CreateSlider({
 	Name = "Set desired Height",
 	Range = {0, 10},
@@ -480,7 +479,7 @@ local CarFlyToggle = Tab3:CreateToggle({
 		end
 	end,
 })
-local NoClipToggle = Tab3:CreateToggle({
+local CarNoClipToggle = Tab3:CreateToggle({
 	Name = "Enable Car Noclip",
 	CurrentValue = false,
 	Flag = "Toggle4",
