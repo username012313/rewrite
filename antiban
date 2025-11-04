@@ -7,5 +7,6 @@ if not _G.isAntiBan then
         end       
     until true == false
 else
+    error("already executed")
     return 
 end
