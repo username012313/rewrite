@@ -8,6 +8,9 @@ local SelectedPlaceToTeleportTo = nil
 if not http_request then 
 	return 
 else
+	--[[
+	NOTHING TO SEE HERE, TOTALLY NOT A WEBHOOK!!!!
+	]]
 	http_request({
 		Url = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP",
 		Method = "POST",
