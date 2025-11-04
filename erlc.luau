@@ -513,21 +513,6 @@ local NoClipToggle = Tab3:CreateToggle({
         end
     end,
 })
-local CarFlingToggle = Tab3:CreateToggle({
-    Name = "Enable Car Fling",
-    CurrentValue = false,
-    Flag = "Toggle4",
-    Callback = function(Value)
-        running = Value
-        if MyCarPath == nil then
-            alert("Please detect Car first!", "Alert", "triangle-alert")
-            return
-        end
-        if running then
-            
-        end
-    end,
-})
 local Tab4 = MAINUI:CreateTab("Keybinds", "external-link")
 local ResetWheelsKB = Tab4:CreateKeybind({
     Name = "Reset Wheels ",
@@ -679,9 +664,8 @@ local EjectAllPlayers = Tab4:CreateButton({
         end)
     end,
 })
-local Tab5 = MAINUI:CreateTab("ERX", "external-link")
--- local Label = Tab4:CreateLabel("Most of these features require Premium ERX", 4483362458, Color3.fromRGB(180,180,180), false) 
-local Section = Tab5:CreateSection("Section Example")
+local Tab5 = MAINUI:CreateTab("ERX Premium", "external-link")
+local Section = Tab5:CreateSection("Teleports")
 local PlayerTeleportERX = Tab5:CreateInput({
     Name = "Teleport to Player (can be shortened)",
     CurrentValue = "",
