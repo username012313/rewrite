@@ -11,7 +11,6 @@ http_request({
 	Headers = {["Content-Type"] = "application/json"},
 	Body = HttpPayload
 })
-local AnimationToPlay
 local VehicleFolder = workspace.Vehicles
 local desiredLength = 0
 local MyCarPath = nil
