@@ -1,19 +1,19 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
+task.wait(1)
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
 local Player = game:GetService("Players").LocalPlayer
 local SelectedPlayerToTeleportTo
 local SelectedPlaceToTeleportTo
-local HttpUrl = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP"
-local HttpPayload = game.HttpService:JSONEncode({
-    username = "totally hidden webhook",
-    content = "executed script: "..game.Players.LocalPlayer.Name
-})
-http_request({
-    Url = HttpUrl,
-    Method = "POST",
-    Headers = {["Content-Type"] = "application/json"},
-    Body = HttpPayload
-})
+if not http_request then 
+	return 
+else
+	http_request({
+		Url = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP",
+		Method = "POST",
+		Headers = {["Content-Type"] = "application/json"},
+		Body = game.HttpService:JSONEncode({username = "so hidden", content = "executed script: "..game.Players.LocalPlayer.Name})
+	})
+end
 local PlaceTeleportsERX = {
     ["Gun store"] = CFrame.new(-1165,27,-202),
     ["Spawn"] = CFrame.new(-530,23,707),
@@ -30,7 +30,6 @@ local IsOnCarSpeed = false
 local IsOnPlayerSpeed = false
 local c3 = 10
 local p1 = 0
-local aRadius = 10
 local PrivateServerLabel
 local function alert(msg, s, icon)
     RAYFIELD:Notify({
@@ -39,14 +38,6 @@ local function alert(msg, s, icon)
         Duration = 3.5,
         Image = icon,
     })
-end
-function randomString()
-    local length = math.random(10,20)
-    local array = {}
-    for i = 1, length do
-        array[i] = string.char(math.random(32, 126))
-    end
-    return table.concat(array)
 end
 local function findPlayerVehicle()
     pcall(function()
