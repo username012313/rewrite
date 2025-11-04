@@ -1,0 +1,9 @@
+while true do
+    task.wait(1)
+    pcall(function()
+        for i,v in getconnections(game:GetService("ScriptContext").Error) do 
+            v:Disconnect() 
+        end
+        task.wait(0.1)
+    end)
+end
