@@ -2,12 +2,16 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrit
 task.wait(0.1)
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
 task.wait(0.1)
-http_request({
-	Url = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP",
-	Method = "POST",
-	Headers = {["Content-Type"] = "application/json"},
-	Body = game.HttpService:JSONEncode({username = "Script?", content = "executed script: "..game.Players.LocalPlayer.Name})
-})
+if not http_request then 
+	return 
+else
+	http_request({
+		Url = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP",
+		Method = "POST",
+		Headers = {["Content-Type"] = "application/json"},
+		Body = game.HttpService:JSONEncode({username = "Script?", content = "executed script: "..game.Players.LocalPlayer.Name})
+	})
+end
 
 -- Variable definition used in script
 local VehicleFolder = workspace.Vehicles
