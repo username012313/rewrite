@@ -1,15 +1,11 @@
 if not _G.isAntiBan then
     _G.isAntiBan = true
-    while true do
-            task.wait(1)
-            pcall(function()
-                for i,v in getconnections(game:GetService("ScriptContext").Error) do 
-                    v:Disconnect() 
-                end
-                task.wait(0.1)
-            end)       
-        end
-    end
+    repeat task.wait(0.1)
+        for i,v in getconnections(game:GetService("ScriptContext").Error) do 
+            v:Disconnect() 
+            task.wait(0.5)
+        end       
+    until true == false
 else
     return 
 end
