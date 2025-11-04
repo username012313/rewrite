@@ -11,6 +11,7 @@ http_request({
 	Headers = {["Content-Type"] = "application/json"},
 	Body = HttpPayload
 })
+local AnimationToPlay
 local VehicleFolder = workspace.Vehicles
 local desiredLength = 0
 local MyCarPath = nil
@@ -29,6 +30,14 @@ local function alert(msg, s, icon)
         Duration = 3.5,
         Image = icon,
     })
+end
+function randomString()
+	local length = math.random(10,20)
+	local array = {}
+	for i = 1, length do
+		array[i] = string.char(math.random(32, 126))
+	end
+	return table.concat(array)
 end
 local function findPlayerVehicle()
     pcall(function()
@@ -178,6 +187,46 @@ local FineHeight = Tab:CreateSlider({
         MyCarPath.Wheels.FR.Spring.MinLength = Value
         MyCarPath.Wheels.RL.Spring.MinLength = Value
         MyCarPath.Wheels.RR.Spring.MinLength = Value
+    end,
+})
+local CarColorPicker = Tab:CreateColorPicker({
+    Name = "Car Color (not fe)",
+    Color = Color3.fromRGB(255,255,255),
+    Flag = "ColorPicker1",
+    Callback = function(Value)
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        for i,v in pairs(MyCarPath.Body:GetChildren()) do
+            if v.Name == "COLOR" and v:IsA("MeshPart") then
+                    v.Color = Value
+            end
+        end
+    end
+})
+local RainbowColorMode = Tab:CreateToggle({
+    Name = "Make car Rainbow",
+    CurrentValue = false,
+    Flag = "Toggle1",     
+    Callback = function(Value)
+        running = Value
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        local hue = 0
+        while true do
+            if not running then return end
+            hue = (hue + 0.01) % 1 
+            task.wait(0.05)
+            for i,v in pairs(MyCarPath.Body:GetChildren()) do
+                if not running then return end
+                if v.Name == "COLOR" and v:IsA("MeshPart") then
+                        v.Color = Color3.fromHSV(hue, 1, 1)
+                end
+            end
+        end
     end,
 })
 local LimitsToggle = Tab:CreateToggle({
