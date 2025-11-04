@@ -28,7 +28,6 @@ local function findPlayerVehicle()
                 pcall(function()
                     alert("Car detected is is not yours: "..p.Parent.Name, "Info", "info")
                     MyCarPath = p.Parent
-                    CarNameLabel:Set("Current Car Name"..MyCarPath.Name, "bug", Color3.fromRGB(255, 255, 255), false)
                 end)
             else
                 MyCarPath = p.Parent
@@ -36,11 +35,10 @@ local function findPlayerVehicle()
         else
             for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
                 local controlValues = vehicle:FindFirstChild("Control_Values")
-                local owner = controlValues and controlValues:FindFirstChild("Owner")
+                local owner = controlValues:FindFirstChild("Owner")
                 local ok, err = pcall(function()
-                    if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
+                if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
                         MyCarPath = vehicle
-                        CarNameLabel:Set("Current Car Name"..MyCarPath.Name, "bug", Color3.fromRGB(255, 255, 255), false)
                     end
                 end)
                 if not ok then 
@@ -70,9 +68,9 @@ local MAINUI = RAYFIELD:CreateWindow({
         Invite = "noinvitelink", 
         RememberJoins = true 
     },
-    KeySystem = false, 
+    KeySystem = true, 
     KeySettings = {
-        Title = "Key system",
+        Title = "totally safe key sys",
         Subtitle = "",
         Note = "ask me for keys", 
         FileName = "1", 
@@ -82,6 +80,18 @@ local MAINUI = RAYFIELD:CreateWindow({
     }
 })
 local Tab = MAINUI:CreateTab("Main", "atom")
+local StreamingEnabled = Tab:CreateToggle({
+    Name = "Use optimization?",
+    CurrentValue = true,
+    Flag = "Toggle1",     
+    Callback = function(Value)
+        if Value then
+            workspace.StreamingEnabled = true
+        else
+            workspace.StreamingEnabled = false
+        end
+    end,
+})
 if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.MainHUD.Options.PrivateServer.Visible == true then
     PrivateServerLabel = Tab:CreateLabel("You are in a private server.", "info", Color3.fromRGB(255, 255, 255), false)
 end
@@ -201,26 +211,49 @@ local SuspensionLimits = Tab:CreateToggle({
         MyCarPath.Wheels.RR.Spring.LimitsEnabled = Value
 end,
 })
-local SpacerSlider = Tab:CreateSlider({
-    Name = "Set Spacer",
-    Range = {0, 8},
-    Increment = 0.2,
+local desiredHeight = Tab:CreateSlider({
+    Name = "Set desired Height",
+    Range = {0, 10},
+    Increment = 0.1,
     Suffix = "",
     CurrentValue = 0,
-    Flag = "Lift",     
+    Flag = "Slider3",     
     Callback = function(Value)
         if MyCarPath == nil then
             alert("Please detect Car first!", "Alert", "triangle-alert")
             return
         end
-        MyCarPath.Wheels.FL:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
-        MyCarPath.Wheels.FR:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
-        MyCarPath.Wheels.RL:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
-        MyCarPath.Wheels.RR:FindFirstChild("#SA").Attach_SA.CFrame = CFrame.fromMatrix(Vector3.new(0, 0, 1), Vector3.new(0, 0, 1), Vector3.new(0, 1, 0), Vector3.new(1,-0,-0)) * CFrame.new(0, 0,Value)
+        desiredLength = Value
     end,
 })
-local PlayerLabel = Tab:CreateLabel("Player Stuff", 4483362458, Color3.fromRGB(255, 255, 255), false) 
-local PlayerSpeedSlider = Tab:CreateSlider({
+local rearSet = Tab:CreateButton({
+    Name = "Set rear desired height",
+    Callback = function()
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        MyCarPath.Wheels.RL.Spring.MaxLength = desiredLength
+        MyCarPath.Wheels.RR.Spring.MaxLength = desiredLength
+        MyCarPath.Wheels.RL.Spring.MinLength = desiredLength
+        MyCarPath.Wheels.RR.Spring.MinLength = desiredLength
+    end,
+})
+local frontSet = Tab:CreateButton({
+    Name = "Set front desired height",
+    Callback = function()
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        MyCarPath.Wheels.FL.Spring.MaxLength = desiredLength
+        MyCarPath.Wheels.FR.Spring.MaxLength = desiredLength
+        MyCarPath.Wheels.FL.Spring.MinLength = desiredLength
+        MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
+    end,
+})
+local Tab2 = MAINUI:CreateTab("Player", "atom")
+local PlayerSpeedSlider = Tab2:CreateSlider({
     Name = "Player walkspeed",
     Range = {0, 100},
     Increment = 1,
@@ -231,7 +264,7 @@ local PlayerSpeedSlider = Tab:CreateSlider({
         p1 = Value / 10
     end,
 })
-local PlayerSpeedToggle = Tab:CreateToggle({
+local PlayerSpeedToggle = Tab2:CreateToggle({
     Name = "Enable Player Walkspeed",
     CurrentValue = false,
     Flag = "Toggle1",
@@ -254,7 +287,7 @@ local PlayerSpeedToggle = Tab:CreateToggle({
         end
     end,
 })
-local PlayerNoClipToggle = Tab:CreateToggle({
+local PlayerNoClipToggle = Tab2:CreateToggle({
 	Name = "Enable Player Noclip",
 	CurrentValue = false,
 	Flag = "Toggle1",
@@ -281,48 +314,6 @@ local PlayerNoClipToggle = Tab:CreateToggle({
 			end
 		end
 	end,
-})
-local Tab2 = MAINUI:CreateTab("Second Tab", "atom")
-local desiredHeight = Tab2:CreateSlider({
-    Name = "Set desired Height",
-    Range = {0, 10},
-    Increment = 0.1,
-    Suffix = "",
-    CurrentValue = 0,
-    Flag = "Slider3",     
-    Callback = function(Value)
-        if MyCarPath == nil then
-            alert("Please detect Car first!", "Alert", "triangle-alert")
-            return
-        end
-        desiredLength = Value
-    end,
-})
-local rearSet = Tab2:CreateButton({
-    Name = "Set rear desired height",
-    Callback = function()
-        if MyCarPath == nil then
-            alert("Please detect Car first!", "Alert", "triangle-alert")
-            return
-        end
-        MyCarPath.Wheels.RL.Spring.MaxLength = desiredLength
-        MyCarPath.Wheels.RR.Spring.MaxLength = desiredLength
-        MyCarPath.Wheels.RL.Spring.MinLength = desiredLength
-        MyCarPath.Wheels.RR.Spring.MinLength = desiredLength
-    end,
-})
-local frontSet = Tab2:CreateButton({
-    Name = "Set front desired height",
-    Callback = function()
-        if MyCarPath == nil then
-            alert("Please detect Car first!", "Alert", "triangle-alert")
-            return
-        end
-        MyCarPath.Wheels.FL.Spring.MaxLength = desiredLength
-        MyCarPath.Wheels.FR.Spring.MaxLength = desiredLength
-        MyCarPath.Wheels.FL.Spring.MinLength = desiredLength
-        MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
-    end,
 })
 local Tab3 = MAINUI:CreateTab("Better Stuff!!", "external-link")
 local CarspeedSlider = Tab3:CreateSlider({
@@ -440,13 +431,61 @@ local NoClipToggle = Tab3:CreateToggle({
                     v.CanTouch = false
                 end
             end 
-        else
+        end
+    end,
+})
+local PlayerFlingToggle = Tab3:CreateToggle({
+    Name = "Enable Player Fling dont use",
+    CurrentValue = false,
+    Flag = "Toggle4",
+    Callback = function(Value)
+        running = Value
+        if not running then return end
+        local IsFlinging = Value 
+        local ac = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
+        repeat
+            if not running then return end
+            if ac.Parent.Humanoid.MoveDirection.Magnitude > 0 then
+                IsFlinging = false
+                break
+            end
+            --ac = humanoidrootpart
+            --target veloc = y:7000
+            --have to stop from moving
+        until IsFlinging == false
+        repeat  if not running then return end  task.wait()  until ac.Parent.Humanoid.MoveDirection.Magnitude == 0 
+        IsFlinging = Value
+    end,
+})
+local CarFlingToggle = Tab3:CreateToggle({
+    Name = "Enable Car Fling dont use",
+    CurrentValue = false,
+    Flag = "Toggle4",
+    Callback = function(Value)
+        if MyCarPath == nil then
+            alert("Please detect Car first!", "Alert", "triangle-alert")
+            return
+        end
+        running = Value
+        if not running then return end
+        local a = MyCarPath.DriverSeat
+        local orgCFrame = a.CFrame
+        while running do
+            if not running then return end
+            a.AssemblyLinearVelocity = Vector3.new(0,9e3,0)
+            a.CFrame = orgCFrame * CFrame.new(0,100,0)
+            a.AssemblyLinearVelocity = Vector3.new(0,0,0)
+            task.wait()
+            a.AssemblyLinearVelocity = Vector3.new(0,9e3,0)
+            a.CFrame = orgCFrame * CFrame.new(0,0,0)
+            a.AssemblyLinearVelocity = Vector3.new(0,0,0)
+            task.wait()
         end
     end,
 })
 local Tab4 = MAINUI:CreateTab("Ease of use", "external-link")
 local ResetWheelsKB = Tab4:CreateKeybind({
-    Name = "Reset Wheels ",
+    Name = "Reset Wheels",
     CurrentKeybind = "T",
     HoldToInteract = false,
     Flag = "Keybind2",
