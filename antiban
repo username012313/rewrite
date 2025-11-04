@@ -1,16 +1,15 @@
-while true do
-    task.spawn(function()
-        if not _G.isAntiBan then
+if not _G.isAntiBan then
+    _G.isAntiBan = true
+    while true do
             task.wait(1)
             pcall(function()
                 for i,v in getconnections(game:GetService("ScriptContext").Error) do 
                     v:Disconnect() 
                 end
                 task.wait(0.1)
-            end)
-            _G.isAntiBan = true
-        else
-            return
+            end)       
         end
-    end)
+    end
+else
+    return 
 end
