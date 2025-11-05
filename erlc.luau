@@ -1,4 +1,4 @@
--- identifier ? b
+-- identifier ? a
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -26,7 +26,12 @@ local PlaceTeleportsERX = {
 	["Spawn"] = CFrame.new(-530,23,707),
 	["Safe Spot"] = CFrame.new(1953, -34,350),
 	["Snipe Spot"] = CFrame.new(-540, 145,365),
-	["Boat"] = CFrame.new(1329,-12,-2925)
+	["Boat"] = CFrame.new(1329,-12,-2925),
+    ["Water Tower"] = CFrame.new(-968, 169,-768),
+    ["Courthouse Roof"] = CFrame.new(-529, 91, 186),
+    ["Crane"] = CFrame.new(60, 127, -508),
+    ["Waterfall"] = CFrame.new(763, 66, -3593),
+    ["Police Station"] = CFrame.new(680,22,-30)
 }
 local VehicleFolder = workspace.Vehicles
 local desiredLength = 0
@@ -715,7 +720,7 @@ local PlayerTeleportBERX = Tab5:CreateButton({
 })
 local TeleportDropDownERX = Tab5:CreateDropdown({
 	Name = "Teleport To:",
-	Options = {"Gun store", "Spawn", "Safe Spot", "Snipe Spot", "Boat"},
+	Options = {"Gun store", "Spawn", "Safe Spot", "Snipe Spot", "Boat", "Water Tower","Courthouse Roof", "Crane", "Waterfall", "Police Station"},
 	CurrentOption = "Gun store",
 	MultipleOptions = false,
 	Flag = "Dropdown1", 
