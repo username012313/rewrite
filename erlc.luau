@@ -1,4 +1,4 @@
--- identifier ? aa
+-- identifier ? bc
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -442,7 +442,7 @@ local FakeLagToggle = Tab2:CreateToggle({
 		end
 	end,
 })
-local ArrestAuraToggle = Tab2:CreateToggle({
+local ArrestAuraToggle = Tab:CreateToggle({
 	Name = "Enable Arrest Aura (radius ~ 10 studs)",
 	CurrentValue = false,
 	Flag = "Toggle1",
@@ -457,12 +457,25 @@ local ArrestAuraToggle = Tab2:CreateToggle({
 		while task.wait() do
 			char.Humanoid.Died:Connect(function()
 				ArrestAuraToggle:Set(false)
+				running = false
 			end)
 			for _, descendant in ipairs(workspace:GetDescendants()) do
 				if descendant.Name == "HumanoidRootPart" then
 					if (descendant.Position - originPart.Position).Magnitude < radius then
 						if (plr.Team == game.Teams.Police or plr.Team == game.Teams.Sheriff) and (plr.Backpack:FindFirstChild("Handcuffs") or char:FindFirstChild("Handcuffs")) then
                             if not game.Players:GetPlayerFromCharacter(descendant.Parent):FindFirstChild("Is_Wanted") then continue end
+							if descendant.Parent.Humanoid.Sit then 
+								local car = nil
+								for i,v in pairs(workspace.Vehicles:GetChildren()) do
+									if v:GetAttribute("Owner") == descendant.Parent.Name then
+										car = v
+									end
+								end
+								if not car then continue end
+								game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game.Players:GetPlayerFromCharacter(descendant.Parent), car)
+                                task.wait()
+                                originPart.CFrame = descendant.CFrame
+							end
                             if not running then return end
                             if char:FindFirstChild("Handcuffs") then
                             elseif plr.Backpack:FindFirstChild("Handcuffs") then
