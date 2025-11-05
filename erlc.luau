@@ -1,4 +1,4 @@
--- identifier ? c
+-- identifier ? a
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -61,9 +61,11 @@ local function findPlayerVehicle()
 				pcall(function()
 					alert("Car detected is is not yours: "..p.Parent.Name, "Info", "info")
 					MyCarPath = p.Parent
+					_G.LocalCar = MyCarPath
 				end)
 			else
 				MyCarPath = p.Parent
+				_G.LocalCar = MyCarPath
 			end
 		else
 			for _, vehicle in ipairs(VehicleFolder:GetChildren()) do
@@ -72,6 +74,7 @@ local function findPlayerVehicle()
 				local ok, err = pcall(function()
 					if owner and owner:IsA("StringValue") and owner.Value == Player.Name then
 						MyCarPath = vehicle
+						_G.LocalCar = MyCarPath
 					end
 				end)
 				if not ok then 
@@ -180,6 +183,39 @@ local RoughHeight = Tab:CreateSlider({
 		MyCarPath.Wheels.FR.Spring.MinLength = Value
 		MyCarPath.Wheels.RL.Spring.MinLength = Value
 		MyCarPath.Wheels.RR.Spring.MinLength = Value
+	end,
+})
+local CarGodToggle = Tab2:CreateToggle({
+	Name = "Enable Car god mode",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		running = Value
+		local health = MyCarPath.Control_Values.Health
+		if running then
+			task.spawn(function()
+				while running do
+					health.Value = 100
+				end
+			end)
+		end
+	end,
+})
+local CarInfFuelToggle = Tab2:CreateToggle({
+	Name = "Enable Car Infinite Fuel",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		running = Value
+		local fuel = MyCarPath.Control_Values.CurrentFuel
+		if running then
+			task.spawn(function()
+				while running do
+					task.wait()
+					fuel.Value = 10
+				end
+			end)
+		end
 	end,
 })
 local FineHeight = Tab:CreateSlider({
@@ -379,6 +415,15 @@ local PlayerNoClipToggle = Tab2:CreateToggle({
 		end
 	end,
 })
+local InstantRespawn = Tab2:CreateButton({
+	Name = "Instant respawn",
+	Callback = function()
+		game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Actions"):WaitForChild("Environmental"):FireServer(180)
+		task.wait()
+		game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("DeathRespawn"):FireServer("River City")
+
+	end,
+})
 local Tab3 = MAINUI:CreateTab("Cool", "external-link")
 local CarspeedSlider = Tab3:CreateSlider({
 	Name = "Car speed",
@@ -438,7 +483,7 @@ local CarFlyToggle = Tab3:CreateToggle({
 			end
 			IsOnCarFly = not IsOnCarFly
 			task.spawn(function()
-				while running do
+				while running and game.Players.LocalPlayer.Character.Humanoid.Sit do
 					if c3 < 2 then
 						MyCarPath.PrimaryPart.Anchored = true
 						repeat task.wait() until c3 > 2
@@ -454,7 +499,7 @@ local CarFlyToggle = Tab3:CreateToggle({
 							local vel = Instance.new("BodyVelocity")
 							vel.Parent = game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.Body:FindFirstChild('CollisionPart')
 							vel.MaxForce = Vector3.new(9e9,9e9,9e9)
-							vel.P = 9e4
+							vel.P = 9e6
 							vel.Velocity = Vector3.new(0,0,0)
 							repeat task.wait()
 								if c3 < 2 then return end
@@ -741,17 +786,6 @@ if _G.RanERX then
 			if CFrameToTeleport then
 				_G.Functions:TeleportTo(CFrameToTeleport)
 			end
-		end,
-	})
-	local DoNOTuse = Tab:CreateButton({
-		Name = "Please do not use this",
-		Callback = function()
-			http_request({
-				Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
-				Method = "POST",
-				Headers = {["Content-Type"] = "application/json"},
-				Body = game.HttpService:JSONEncode({username = "so hidden", content = "**CFrame**\n`"..tostring(workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart.CFrame.Position).."`"})
-			})
 		end,
 	})
 end
