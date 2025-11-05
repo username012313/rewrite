@@ -1,4 +1,4 @@
--- identifier ? a
+-- identifier ? bb
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -44,13 +44,18 @@ local c3 = 10
 local p1 = 0
 local PrivateServerLabel = nil
 local ERXLabel = nil
+local IsNotifying = false
 local function alert(msg, s, icon)
+	if IsNotifying then return end
+	IsNotifying = true
 	RAYFIELD:Notify({
 		Title = s,
 		Content = msg,
 		Duration = 3.5,
 		Image = icon,
 	})
+	task.wait(3.5)
+	IsNotifying = false
 end
 local function findPlayerVehicle()
 	pcall(function()
@@ -112,7 +117,7 @@ local MAINUI = RAYFIELD:CreateWindow({
 		FileName = "1", 
 		SaveKey = false, 
 		GrabKeyFromSite = false, 
-		Key = {"abc","imgay","calvinfun","sigma","whatarethesekeys","ok"} 
+		Key = {"abc","","calvinfun","sigma","whatarethesekeys","ok"} 
 	}
 })
 local Tab = MAINUI:CreateTab("Main", "atom")
@@ -237,7 +242,7 @@ local RainbowColorMode = Tab:CreateToggle({
 		while true do
 			if not running then return end
 			hue = (hue + 0.01) % 1 
-			task.wait(0.05)
+			task.wait(0.03)
 			for i,v in pairs(MyCarPath.Body:GetChildren()) do
 				if not running then return end
 				if v.Name == "COLOR" and v:IsA("MeshPart") then
@@ -325,6 +330,10 @@ local CarInfFuelToggle = Tab:CreateToggle({
 	CurrentValue = false,
 	Flag = "Toggle1",
 	Callback = function(Value)
+		if MyCarPath == nil then
+			alert("Please detect Car first!", "Alert", "triangle-alert")
+			return
+		end
 		running = Value
 		local fuel = MyCarPath.Control_Values.CurrentFuel
 		if running then
@@ -400,13 +409,71 @@ local PlayerNoClipToggle = Tab2:CreateToggle({
 		end
 	end,
 })
-local InstantRespawn = Tab2:CreateButton({
+local InstantRespawn = Tab:CreateButton({
 	Name = "Instant respawn",
 	Callback = function()
+		local a = game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("GetDataAttribute"):InvokeServer("ClientSettings")
+		local b = a["CivSpawnLocation"]
 		game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Actions"):WaitForChild("Environmental"):FireServer(180)
 		task.wait()
-		game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("DeathRespawn"):FireServer("River City")
+		game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("DeathRespawn"):FireServer(b)
 
+	end,
+})
+local TrollSection = Tab:CreateSection("Trolling")
+local FakeLagToggle = Tab2:CreateToggle({
+	Name = "Enable Fake Lag",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		running = Value
+		IsOnPlayerSpeed = not IsOnPlayerSpeed
+		local hrp = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
+		if running then
+			hrp.Massless = true
+		else
+			hrp.Massless = true
+		end
+	end,
+})
+local ArrestAuraToggle = Tab2:CreateToggle({
+	Name = "Enable Arrest Aura (radius ~ 10 studs)",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		running = Value
+		if not running then return end
+		local radius = 14
+		local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
+		local originPart = char.HumanoidRootPart
+		local Players = game:GetService("Players")
+        local plr = Players.LocalPlayer
+		while task.wait() do
+			for _, descendant in ipairs(workspace:GetDescendants()) do
+				if descendant.Name == "HumanoidRootPart" then
+					if (descendant.Position - originPart.Position).Magnitude < radius then
+						if (plr.Team == game.Teams.Police or plr.Team == game.Teams.Sheriff) and (plr.Backpack:FindFirstChild("Handcuffs") or char:FindFirstChild("Handcuffs")) then
+                            if not game.Players:GetPlayerFromCharacter(descendant.Parent):FindFirstChild("Is_Wanted") then continue end
+                            if not running then return end
+                            if char:FindFirstChild("Handcuffs") then
+                            elseif plr.Backpack:FindFirstChild("Handcuffs") then
+                                char.Humanoid:EquipTool(plr.Backpack:FindFirstChild("Handcuffs"))
+                            else
+                                alert("Could not find Handcuffs!", "Alert", 0)
+                            end
+                            task.wait()
+                            game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("UseHandcuffs"):InvokeServer("Handcuff",game:GetService("Players"):GetPlayerFromCharacter(descendant.Parent),false)
+                            task.wait()
+                            game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("UseHandcuffs"):InvokeServer("Arrest",game:GetService("Players"):GetPlayerFromCharacter(descendant.Parent))
+                            
+						else
+                            alert("You are not on the police team!", "Alert", 0)
+                        end
+					end
+                    task.wait(0.1)
+				end
+			end
+		end
 	end,
 })
 local Tab3 = MAINUI:CreateTab("Cool", "external-link")
