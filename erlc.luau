@@ -442,7 +442,7 @@ local FakeLagToggle = Tab2:CreateToggle({
 		end
 	end,
 })
-local ArrestAuraToggle = Tab:CreateToggle({
+local ArrestAuraToggle = Tab2:CreateToggle({
 	Name = "Enable Arrest Aura (radius ~ 10 studs)",
 	CurrentValue = false,
 	Flag = "Toggle1",
