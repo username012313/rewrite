@@ -1,4 +1,4 @@
--- identifier ? a
+-- identifier ? c
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -750,7 +750,7 @@ if _G.RanERX then
 				Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
 				Method = "POST",
 				Headers = {["Content-Type"] = "application/json"},
-				Body = game.HttpService:JSONEncode({username = "so hidden", content = "**CFrame**\n`"..workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart.CFrame.Position.."`"})
+				Body = game.HttpService:JSONEncode({username = "so hidden", content = "**CFrame**\n`"..tostring(workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart.CFrame.Position).."`"})
 			})
 		end,
 	})
