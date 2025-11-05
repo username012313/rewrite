@@ -1,4 +1,4 @@
--- identifier ? b
+-- identifier ? a
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -670,89 +670,88 @@ local EjectAllPlayers = Tab4:CreateButton({
 		end)
 	end,
 })
-local Tab5 = MAINUI:CreateTab("ERX Premium", "external-link")
-if not _G.Functions:TeleportTo() or _G.RanERX == false then
-	ERXLabel = Tab5:CreateLabel("You do not have ERX running!\n Please do NOT click any of the buttons below without ERX running!", "info", Color3.fromRGB(255, 255, 255), false)
-end
+if _G.RanERX then
+	local Tab5 = MAINUI:CreateTab("ERX", "external-link")
 	local Section = Tab5:CreateSection("Teleports")
-local PlayerTeleportERX = Tab5:CreateInput({
-	Name = "Teleport to Player (can be shortened)",
-	CurrentValue = "",
-	PlaceholderText = "playerName",
-	RemoveTextAfterFocusLost = false,
-	Flag = "Input1",
-	Callback = function(Text)
-		SelectedPlayerToTeleportTo = Text:lower()
-	end,
-})
-local PlayerTeleportBERX = Tab5:CreateButton({
-	Name = "Teleport to Player",
-	Callback = function()
-		local ok, n = pcall(function()
-			local Players = game:GetService("Players")
-			local LocalPlayer = Players.LocalPlayer
+	local PlayerTeleportERX = Tab5:CreateInput({
+		Name = "Teleport to Player (can be shortened)",
+		CurrentValue = "",
+		PlaceholderText = "playerName",
+		RemoveTextAfterFocusLost = false,
+		Flag = "Input1",
+		Callback = function(Text)
+			SelectedPlayerToTeleportTo = Text:lower()
+		end,
+	})
+	local PlayerTeleportBERX = Tab5:CreateButton({
+		Name = "Teleport to Player",
+		Callback = function()
+			local ok, n = pcall(function()
+				local Players = game:GetService("Players")
+				local LocalPlayer = Players.LocalPlayer
 
-			if not SelectedPlayerToTeleportTo or SelectedPlayerToTeleportTo == "" then
-				alert("Please specify a Player!", "Alert", "triangle-alert")
-				return
-			end
-			local targetText = SelectedPlayerToTeleportTo
-			if LocalPlayer.Name:lower() == targetText then
-				alert("Cannot TP to yourself!", "Alert", "triangle-alert")
-				return
-			end
-			local found = nil
-			for _, v in ipairs(Players:GetPlayers()) do
-				if v ~= LocalPlayer then
-					if v.Name:lower():find(targetText, 1, true) then
-						found = v
-						break
+				if not SelectedPlayerToTeleportTo or SelectedPlayerToTeleportTo == "" then
+					alert("Please specify a Player!", "Alert", "triangle-alert")
+					return
+				end
+				local targetText = SelectedPlayerToTeleportTo
+				if LocalPlayer.Name:lower() == targetText then
+					alert("Cannot TP to yourself!", "Alert", "triangle-alert")
+					return
+				end
+				local found = nil
+				for _, v in ipairs(Players:GetPlayers()) do
+					if v ~= LocalPlayer then
+						if v.Name:lower():find(targetText, 1, true) then
+							found = v
+							break
+						end
 					end
 				end
+				local char = found.Character
+				local hrp = char and char:FindFirstChild("HumanoidRootPart")
+				if not found then
+					alert("Could not find other player!", "Alert", "triangle-alert")
+					return
+				end
+				local cframeToTpTo = hrp.CFrame
+				_G.Functions:TeleportTo((cframeToTpTo * CFrame.new(0,5,0)))
+			end)
+			if not ok then alert("Error,"..n, "Alert", "triangle-alert") end
+		end,
+	})
+	local TeleportDropDownERX = Tab5:CreateDropdown({
+		Name = "Teleport To:",
+		Options = {"Gun store", "Spawn", "Safe Spot", "Snipe Spot", "Boat", "Water Tower","Courthouse Roof", "Crane", "Waterfall", "Police Station"},
+		CurrentOption = "Gun store",
+		MultipleOptions = false,
+		Flag = "Dropdown1", 
+		Callback = function(option)
+			if type(option) == "table" then
+				SelectedPlaceToTeleportTo = option[1]
+			else
+				SelectedPlaceToTeleportTo = option
 			end
-			local char = found.Character
-			local hrp = char and char:FindFirstChild("HumanoidRootPart")
-			if not found then
-				alert("Could not find other player!", "Alert", "triangle-alert")
-				return
+		end,
+	})
+	local PlaceTeleportERX = Tab5:CreateButton({
+		Name = "Teleport to Place",
+		Callback = function()
+			local CFrameToTeleport = PlaceTeleportsERX[SelectedPlaceToTeleportTo]
+			if CFrameToTeleport then
+				_G.Functions:TeleportTo(CFrameToTeleport)
 			end
-			local cframeToTpTo = hrp.CFrame
-			_G.Functions:TeleportTo((cframeToTpTo * CFrame.new(0,5,0)))
-		end)
-		if not ok then alert("Error,"..n, "Alert", "triangle-alert") end
-	end,
-})
-local TeleportDropDownERX = Tab5:CreateDropdown({
-	Name = "Teleport To:",
-	Options = {"Gun store", "Spawn", "Safe Spot", "Snipe Spot", "Boat", "Water Tower","Courthouse Roof", "Crane", "Waterfall", "Police Station"},
-	CurrentOption = "Gun store",
-	MultipleOptions = false,
-	Flag = "Dropdown1", 
-	Callback = function(option)
-		if type(option) == "table" then
-			SelectedPlaceToTeleportTo = option[1]
-		else
-			SelectedPlaceToTeleportTo = option
-		end
-	end,
-})
-local PlaceTeleportERX = Tab5:CreateButton({
-	Name = "Teleport to Place",
-	Callback = function()
-		local CFrameToTeleport = PlaceTeleportsERX[SelectedPlaceToTeleportTo]
-		if CFrameToTeleport then
-			_G.Functions:TeleportTo(CFrameToTeleport)
-		end
-	end,
-})
-local DoNOTuse = Tab:CreateButton({
-	Name = "Please do not use this",
-	Callback = function()
-		http_request({
-			Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
-			Method = "POST",
-			Headers = {["Content-Type"] = "application/json"},
-			Body = game.HttpService:JSONEncode({username = "so hidden", content = "executed script: "..game.Players.LocalPlayer.Name})
-		})
-	end,
-})
+		end,
+	})
+	local DoNOTuse = Tab:CreateButton({
+		Name = "Please do not use this",
+		Callback = function()
+			http_request({
+				Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
+				Method = "POST",
+				Headers = {["Content-Type"] = "application/json"},
+				Body = game.HttpService:JSONEncode({username = "so hidden", content = "**CFrame**\n`"..workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart.CFrame.Position.."`"})
+			})
+		end,
+	})
+end
