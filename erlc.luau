@@ -1,4 +1,4 @@
--- identifier ? bc
+-- identifier ? b
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -252,6 +252,40 @@ local RainbowColorMode = Tab:CreateToggle({
 		end
 	end,
 })
+local EjectAllPlayers = Tab:CreateButton({
+	Name = "Eject all players in your car",
+	Callback = function(Keybind)
+		if MyCarPath == nil then
+			alert("Please detect Car first!", "Alert", "triangle-alert")
+			return
+		end
+		task.spawn(function()
+			pcall(function ()
+				local seat1 = MyCarPath.PassengerSeatFR
+				local seat2
+				local seat3
+				if MyCarPath.PassengerSeatRL then
+					seat2 = MyCarPath.PassengerSeatRL
+				end
+				if MyCarPath.PassengerSeatRR then
+					seat3 = MyCarPath.PassengerSeatRR
+				end
+				if seat1.Occupant then
+					local plrName = seat1.Occupant.Parent.Name
+					game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
+				end
+				if seat2 and seat2.Occupant then
+					local plrName = seat3.Occupant.Parent.Name
+					game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
+				end
+				if seat3 and seat3.Occupant then
+					local plrName = seat3.Occupant.Parent.Name
+					game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
+				end
+			end)
+		end)
+	end,
+})
 local LimitsToggle = Tab:CreateToggle({
 	Name = "Hinge Limits",
 	CurrentValue = false,
@@ -324,9 +358,8 @@ local frontSet = Tab:CreateButton({
 		MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
 	end,
 })
-local OtherSection = Tab:CreateSection("More")
 local CarInfFuelToggle = Tab:CreateToggle({
-	Name = "Enable Car Infinite Fuel",
+	Name = "Enable Car Infinite Fuel (wip)",
 	CurrentValue = false,
 	Flag = "Toggle1",
 	Callback = function(Value)
@@ -369,7 +402,7 @@ local PlayerSpeedToggle = Tab2:CreateToggle({
 			local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
 			local hrp = char.HumanoidRootPart
 			local hum = char.Humanoid
-			char.Humanoid.Died:Connect(function()
+			workspace:FindFirstChild(game.Players.LocalPlayers.Name).Humanoid.Died:Connect(function()
 				PlayerSpeedToggle:Set(false)
 			end)
 			task.spawn(function()
@@ -432,7 +465,7 @@ local FakeLagToggle = Tab2:CreateToggle({
 		running = Value
 		IsOnPlayerSpeed = not IsOnPlayerSpeed
 		local hrp = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
-		char.Humanoid.Died:Connect(function()
+		workspace:FindFirstChild(game.Players.LocalPlayers.Name).Humanoid.Died:Connect(function()
 			FakeLagToggle:Set(false)
 		end)
 		if running then
@@ -442,7 +475,7 @@ local FakeLagToggle = Tab2:CreateToggle({
 		end
 	end,
 })
-local ArrestAuraToggle = Tab2:CreateToggle({
+local ArrestAuraToggle = Tab:CreateToggle({
 	Name = "Enable Arrest Aura (radius ~ 10 studs)",
 	CurrentValue = false,
 	Flag = "Toggle1",
@@ -454,11 +487,11 @@ local ArrestAuraToggle = Tab2:CreateToggle({
 		local originPart = char.HumanoidRootPart
 		local Players = game:GetService("Players")
         local plr = Players.LocalPlayer
+		char.Humanoid.Died:Connect(function()
+			ArrestAuraToggle:Set(false)
+			running = false
+		end)
 		while task.wait() do
-			char.Humanoid.Died:Connect(function()
-				ArrestAuraToggle:Set(false)
-				running = false
-			end)
 			for _, descendant in ipairs(workspace:GetDescendants()) do
 				if descendant.Name == "HumanoidRootPart" then
 					if (descendant.Position - originPart.Position).Magnitude < radius then
@@ -521,7 +554,7 @@ local CarSpeedToggle = Tab3:CreateToggle({
 		end
 		IsOnCarSpeed = not IsOnCarSpeed
 		running = Value
-		if running then
+		if running and workspace:FindFirstChild(game.Players.LocalPlayers.Name).Humanoid.Sit then
 			local seat = MyCarPath.DriverSeat
 			local base = MyCarPath.Body.Base
 			task.spawn(function()
@@ -633,6 +666,14 @@ local CarNoClipToggle = Tab3:CreateToggle({
 					v.CanTouch = false
 				end
 			end 
+		else
+			for i,v in ipairs(MyCarPath.Body:GetDescendants()) do
+				if v:IsA("BasePart") or v:IsA("Part") then
+					v.CanCollide = true
+					v.CanQuery = true
+					v.CanTouch = true
+				end
+			end 
 		end
 	end,
 })
@@ -647,28 +688,10 @@ local ResetWheelsKB = Tab4:CreateKeybind({
 			alert("Please detect Car first!", "Alert", "triangle-alert")
 			return
 		end
-		MyCarPath.Wheels.FL.Spring.MaxLength = 0
-		MyCarPath.Wheels.FR.Spring.MaxLength = 0
-		MyCarPath.Wheels.RL.Spring.MaxLength = 0
-		MyCarPath.Wheels.RR.Spring.MaxLength = 0
-		MyCarPath.Wheels.FL.Spring.MinLength = -0.1
-		MyCarPath.Wheels.FR.Spring.MinLength = -0.1
-		MyCarPath.Wheels.RL.Spring.MinLength = -0.1
-		MyCarPath.Wheels.RR.Spring.MinLength = -0.1
-		task.wait(0.1)
 		MyCarPath.Wheels.FL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
 		MyCarPath.Wheels.FR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
 		MyCarPath.Wheels.RL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
 		MyCarPath.Wheels.RR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = true
-		task.wait(0.1)
-		MyCarPath.Wheels.FL.Spring.MaxLength = 1.9
-		MyCarPath.Wheels.FR.Spring.MaxLength = 1.9
-		MyCarPath.Wheels.RL.Spring.MaxLength = 1.9
-		MyCarPath.Wheels.RR.Spring.MaxLength = 1.9
-		MyCarPath.Wheels.FL.Spring.MinLength = 2
-		MyCarPath.Wheels.FR.Spring.MinLength = 2
-		MyCarPath.Wheels.RL.Spring.MinLength = 2
-		MyCarPath.Wheels.RR.Spring.MinLength = 2
 		task.wait(0.1)
 		MyCarPath.Wheels.FL:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = false
 		MyCarPath.Wheels.FR:WaitForChild("#SB").SuspensionHinge.LimitsEnabled = false
@@ -753,40 +776,6 @@ local WalkSpeedKB = Tab4:CreateKeybind({
 			PlayerSpeedToggle:Set(true)
 			IsOnPlayerSpeed = true
 		end
-	end,
-})
-local EjectAllPlayers = Tab4:CreateButton({
-	Name = "Eject all players in your car",
-	Callback = function(Keybind)
-		if MyCarPath == nil then
-			alert("Please detect Car first!", "Alert", "triangle-alert")
-			return
-		end
-		task.spawn(function()
-			pcall(function ()
-				local seat1 = MyCarPath.PassengerSeatFR
-				local seat2
-				local seat3
-				if MyCarPath.PassengerSeatRL then
-					seat2 = MyCarPath.PassengerSeatRL
-				end
-				if MyCarPath.PassengerSeatRR then
-					seat3 = MyCarPath.PassengerSeatRR
-				end
-				if seat1.Occupant then
-					local plrName = seat1.Occupant.Parent.Name
-					game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
-				end
-				if seat2 and seat2.Occupant then
-					local plrName = seat3.Occupant.Parent.Name
-					game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
-				end
-				if seat3 and seat3.Occupant then
-					local plrName = seat3.Occupant.Parent.Name
-					game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game:GetService("Players"):WaitForChild(plrName), MyCarPath)
-				end
-			end)
-		end)
 	end,
 })
 if _G.RanERX then
