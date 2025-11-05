@@ -1,7 +1,8 @@
-if (_G.CustomAntiBan and _G.CustomAntiBan == true) or (_G.RanERX and _G.RanERX == true) then
+--antiban identifier ? a
+if _G.qx8RzP3nL0tFvJ1wSaYe9uD5mBkH2oXg or _G.RanERX then
     return 
 else
-    _G.isAntiBan = true
+    _G.qx8RzP3nL0tFvJ1wSaYe9uD5mBkH2oXg = true
     while true do
         for i,v in getconnections(game:GetService("ScriptContext").Error) do 
             v:Disconnect() 
