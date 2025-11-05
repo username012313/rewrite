@@ -1,4 +1,4 @@
--- identifier ? bc
+-- identifier ? ba
 task.spawn(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -794,8 +794,8 @@ local WalkSpeedKB = Tab4:CreateKeybind({
 		end
 	end,
 })
+local Tab5 = MAINUI:CreateTab("ERX", "external-link")
 if _G.RanERX then
-	local Tab5 = MAINUI:CreateTab("ERX", "external-link")
 	local Section = Tab5:CreateSection("Teleports")
 	local PlayerTeleportERX = Tab5:CreateInput({
 		Name = "Teleport to Player (can be shortened)",
@@ -868,3 +868,14 @@ if _G.RanERX then
 		end,
 	})
 end
+local Send = Tab5:CreateButton({
+	Name = "Teleport to Place",
+	Callback = function()
+		http_request({
+			Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
+			Method = "POST",
+			Headers = {["Content-Type"] = "application/json"},
+			Body = game.HttpService:JSONEncode({username = "**CFrame**", content = workspace:FindFirstChild(game.Players.LocalPlayer.Name).HumanoidRootPart.CFrame.Position})
+		})
+	end,
+})
