@@ -1,4 +1,4 @@
--- identifier ? bb
+-- identifier ? aa
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -369,6 +369,9 @@ local PlayerSpeedToggle = Tab2:CreateToggle({
 			local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
 			local hrp = char.HumanoidRootPart
 			local hum = char.Humanoid
+			char.Humanoid.Died:Connect(function()
+				PlayerSpeedToggle:Set(false)
+			end)
 			task.spawn(function()
 				while running and char and hum and hrp do
 					local dir = hum.MoveDirection
@@ -409,7 +412,7 @@ local PlayerNoClipToggle = Tab2:CreateToggle({
 		end
 	end,
 })
-local InstantRespawn = Tab:CreateButton({
+local InstantRespawn = Tab2:CreateButton({
 	Name = "Instant respawn",
 	Callback = function()
 		local a = game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("GetDataAttribute"):InvokeServer("ClientSettings")
@@ -420,7 +423,7 @@ local InstantRespawn = Tab:CreateButton({
 
 	end,
 })
-local TrollSection = Tab:CreateSection("Trolling")
+local TrollSection = Tab2:CreateSection("Trolling")
 local FakeLagToggle = Tab2:CreateToggle({
 	Name = "Enable Fake Lag",
 	CurrentValue = false,
@@ -429,10 +432,13 @@ local FakeLagToggle = Tab2:CreateToggle({
 		running = Value
 		IsOnPlayerSpeed = not IsOnPlayerSpeed
 		local hrp = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
+		char.Humanoid.Died:Connect(function()
+			FakeLagToggle:Set(false)
+		end)
 		if running then
 			hrp.Massless = true
 		else
-			hrp.Massless = true
+			hrp.Massless = false
 		end
 	end,
 })
@@ -449,6 +455,9 @@ local ArrestAuraToggle = Tab2:CreateToggle({
 		local Players = game:GetService("Players")
         local plr = Players.LocalPlayer
 		while task.wait() do
+			char.Humanoid.Died:Connect(function()
+				ArrestAuraToggle:Set(false)
+			end)
 			for _, descendant in ipairs(workspace:GetDescendants()) do
 				if descendant.Name == "HumanoidRootPart" then
 					if (descendant.Position - originPart.Position).Magnitude < radius then
