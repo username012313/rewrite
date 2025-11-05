@@ -185,39 +185,6 @@ local RoughHeight = Tab:CreateSlider({
 		MyCarPath.Wheels.RR.Spring.MinLength = Value
 	end,
 })
-local CarGodToggle = Tab2:CreateToggle({
-	Name = "Enable Car god mode",
-	CurrentValue = false,
-	Flag = "Toggle1",
-	Callback = function(Value)
-		running = Value
-		local health = MyCarPath.Control_Values.Health
-		if running then
-			task.spawn(function()
-				while running do
-					health.Value = 100
-				end
-			end)
-		end
-	end,
-})
-local CarInfFuelToggle = Tab2:CreateToggle({
-	Name = "Enable Car Infinite Fuel",
-	CurrentValue = false,
-	Flag = "Toggle1",
-	Callback = function(Value)
-		running = Value
-		local fuel = MyCarPath.Control_Values.CurrentFuel
-		if running then
-			task.spawn(function()
-				while running do
-					task.wait()
-					fuel.Value = 10
-				end
-			end)
-		end
-	end,
-})
 local FineHeight = Tab:CreateSlider({
 	Name = "Set height fine",
 	Range = {0, 8},
@@ -310,7 +277,7 @@ local SuspensionLimits = Tab:CreateToggle({
 		MyCarPath.Wheels.RR.Spring.LimitsEnabled = Value
 	end,
 })
-local SuspensionSection = Tab:CreateSection("More")
+local SuspensionSection = Tab:CreateSection("Tuning")
 local desiredHeight = Tab:CreateSlider({
 	Name = "Set desired Height",
 	Range = {0, 10},
@@ -350,6 +317,24 @@ local frontSet = Tab:CreateButton({
 		MyCarPath.Wheels.FR.Spring.MaxLength = desiredLength
 		MyCarPath.Wheels.FL.Spring.MinLength = desiredLength
 		MyCarPath.Wheels.FR.Spring.MinLength = desiredLength
+	end,
+})
+local OtherSection = Tab:CreateSection("More")
+local CarInfFuelToggle = Tab:CreateToggle({
+	Name = "Enable Car Infinite Fuel",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		running = Value
+		local fuel = MyCarPath.Control_Values.CurrentFuel
+		if running then
+			task.spawn(function()
+				while running do
+					task.wait()
+					fuel.Value = 10
+				end
+			end)
+		end
 	end,
 })
 local Tab2 = MAINUI:CreateTab("Player", "atom")
