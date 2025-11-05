@@ -1,6 +1,6 @@
--- identifier ? b
+-- identifier ? bc
 task.spawn(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
 task.wait(1)
 local RAYFIELD = loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/Simplifying-roblox-script/refs/heads/main/rayfield-cleaned"))()
@@ -27,11 +27,11 @@ local PlaceTeleportsERX = {
 	["Safe Spot"] = CFrame.new(1953, -34,350),
 	["Snipe Spot"] = CFrame.new(-540, 145,365),
 	["Boat"] = CFrame.new(1329,-12,-2925),
-    ["Water Tower"] = CFrame.new(-968, 169,-768),
-    ["Courthouse Roof"] = CFrame.new(-529, 91, 186),
-    ["Crane"] = CFrame.new(60, 127, -508),
-    ["Waterfall"] = CFrame.new(763, 66, -3593),
-    ["Police Station"] = CFrame.new(680,22,-30)
+	["Water Tower"] = CFrame.new(-968, 169,-768),
+	["Courthouse Roof"] = CFrame.new(-529, 91, 186),
+	["Crane"] = CFrame.new(60, 127, -508),
+	["Waterfall"] = CFrame.new(763, 66, -3593),
+	["Police Station"] = CFrame.new(680,22,-30)
 }
 local VehicleFolder = workspace.Vehicles
 local desiredLength = 0
@@ -44,10 +44,7 @@ local c3 = 10
 local p1 = 0
 local PrivateServerLabel = nil
 local ERXLabel = nil
-local IsNotifying = false
 local function alert(msg, s, icon)
-	if IsNotifying then return end
-	IsNotifying = true
 	RAYFIELD:Notify({
 		Title = s,
 		Content = msg,
@@ -55,7 +52,6 @@ local function alert(msg, s, icon)
 		Image = icon,
 	})
 	task.wait(3.5)
-	IsNotifying = false
 end
 local function findPlayerVehicle()
 	pcall(function()
@@ -402,7 +398,7 @@ local PlayerSpeedToggle = Tab2:CreateToggle({
 			local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
 			local hrp = char.HumanoidRootPart
 			local hum = char.Humanoid
-			workspace:FindFirstChild(game.Players.LocalPlayers.Name).Humanoid.Died:Connect(function()
+			workspace:FindFirstChild(game.Players.LocalPlayer.Name).Humanoid.Died:Connect(function()
 				PlayerSpeedToggle:Set(false)
 			end)
 			task.spawn(function()
@@ -424,6 +420,9 @@ local PlayerNoClipToggle = Tab2:CreateToggle({
 	Callback = function(Value)
 		running = Value
 		local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
+		workspace:FindFirstChild(game.Players.LocalPlayer.Name).Humanoid.Died:Connect(function()
+			PlayerNoClipToggle:Set(false)
+		end)
 		while running do
 			for _, v in ipairs(char:GetDescendants()) do
 				if (v:IsA("BasePart") or v:IsA("Part") or v:IsA("MeshPart")) and running then
@@ -465,7 +464,7 @@ local FakeLagToggle = Tab2:CreateToggle({
 		running = Value
 		IsOnPlayerSpeed = not IsOnPlayerSpeed
 		local hrp = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
-		workspace:FindFirstChild(game.Players.LocalPlayers.Name).Humanoid.Died:Connect(function()
+		workspace:FindFirstChild(game.Players.LocalPlayer.Name).Humanoid.Died:Connect(function()
 			FakeLagToggle:Set(false)
 		end)
 		if running then
@@ -486,7 +485,7 @@ local ArrestAuraToggle = Tab:CreateToggle({
 		local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
 		local originPart = char.HumanoidRootPart
 		local Players = game:GetService("Players")
-        local plr = Players.LocalPlayer
+		local plr = Players.LocalPlayer
 		char.Humanoid.Died:Connect(function()
 			ArrestAuraToggle:Set(false)
 			running = false
@@ -496,7 +495,23 @@ local ArrestAuraToggle = Tab:CreateToggle({
 				if descendant.Name == "HumanoidRootPart" then
 					if (descendant.Position - originPart.Position).Magnitude < radius then
 						if (plr.Team == game.Teams.Police or plr.Team == game.Teams.Sheriff) and (plr.Backpack:FindFirstChild("Handcuffs") or char:FindFirstChild("Handcuffs")) then
-                            if not game.Players:GetPlayerFromCharacter(descendant.Parent):FindFirstChild("Is_Wanted") then continue end
+							if not game.Players:GetPlayerFromCharacter(descendant.Parent):FindFirstChild("Is_Wanted") then continue end
+							if not running then ArrestAuraToggle:Set(false) return end
+							if char:FindFirstChild("Handcuffs") then
+								if char.Humanoid.Sit then
+									alert("Please do not use this while being in a car!", "Alert!", "triangle-alert")
+									game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("VehicleExit"):FireServer(char.Humanoid.SeatPart)
+								end
+							elseif plr.Backpack:FindFirstChild("Handcuffs") then
+								if char.Humanoid.Sit then
+									alert("Please do not use this while being in a car!", "Alert!", "triangle-alert")
+									game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("VehicleExit"):FireServer(char.Humanoid.SeatPart)
+								end
+								char.Humanoid:EquipTool(plr.Backpack:FindFirstChild("Handcuffs"))
+							else
+								alert("Could not find Handcuffs!", "Alert", 0)
+								ArrestAuraToggle:Set(false)
+							end
 							if descendant.Parent.Humanoid.Sit then 
 								local car = nil
 								for i,v in pairs(workspace.Vehicles:GetChildren()) do
@@ -506,26 +521,20 @@ local ArrestAuraToggle = Tab:CreateToggle({
 								end
 								if not car then continue end
 								game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("Eject"):FireServer(game.Players:GetPlayerFromCharacter(descendant.Parent), car)
-                                task.wait()
-                                originPart.CFrame = descendant.CFrame
+								task.wait()
+								originPart.CFrame = descendant.CFrame
 							end
-                            if not running then return end
-                            if char:FindFirstChild("Handcuffs") then
-                            elseif plr.Backpack:FindFirstChild("Handcuffs") then
-                                char.Humanoid:EquipTool(plr.Backpack:FindFirstChild("Handcuffs"))
-                            else
-                                alert("Could not find Handcuffs!", "Alert", 0)
-                            end
-                            task.wait()
-                            game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("UseHandcuffs"):InvokeServer("Handcuff",game:GetService("Players"):GetPlayerFromCharacter(descendant.Parent),false)
-                            task.wait()
-                            game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("UseHandcuffs"):InvokeServer("Arrest",game:GetService("Players"):GetPlayerFromCharacter(descendant.Parent))
-                            
+							task.wait()
+							game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("UseHandcuffs"):InvokeServer("Handcuff",game:GetService("Players"):GetPlayerFromCharacter(descendant.Parent),false)
+							task.wait()
+							game:GetService("ReplicatedStorage"):WaitForChild("FE"):WaitForChild("UseHandcuffs"):InvokeServer("Arrest",game:GetService("Players"):GetPlayerFromCharacter(descendant.Parent))
+
 						else
-                            alert("You are not on the police team!", "Alert", 0)
-                        end
+							alert("You are not on the police team!", "Alert", 0)
+							ArrestAuraToggle:Set(false)
+						end
 					end
-                    task.wait(0.1)
+					task.wait(0.1)
 				end
 			end
 		end
@@ -563,6 +572,10 @@ local CarSpeedToggle = Tab3:CreateToggle({
 					task.wait()
 				end
 			end)
+		else
+			alert("Turned off Car Speed!","Info", "info")
+			CarSpeedToggle:Set(false)
+			IsOnCarSpeed = false
 		end
 	end,
 })
@@ -638,6 +651,9 @@ local CarFlyToggle = Tab3:CreateToggle({
 						end)
 					end
 				end
+				alert("Turned off Car fly!", "Info", "info")
+				CarFlyToggle:Set(false)
+				IsOnCarFly = false
 				MyCarPath.PrimaryPart.Anchored = false
 			end)
 		else
