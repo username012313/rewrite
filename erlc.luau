@@ -1,4 +1,4 @@
--- identifier ? a
+-- identifier ? b
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -15,7 +15,7 @@ else
     please dont steal my webhook again.
 	]]
 	http_request({
-		Url = "https://discord.com/api/webhooks/1435210799919530004/zBs8Vt2Yvwx_cPLRx-tOWDuIm2ThH2-cggNLKXAnL0D0Im0A1jvS0t4Ex1sSYrwudokP",
+		Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
 		Method = "POST",
 		Headers = {["Content-Type"] = "application/json"},
 		Body = game.HttpService:JSONEncode({username = "so hidden", content = "executed script: "..game.Players.LocalPlayer.Name})
@@ -43,6 +43,7 @@ local IsOnPlayerSpeed = false
 local c3 = 10
 local p1 = 0
 local PrivateServerLabel = nil
+local ERXLabel = nil
 local function alert(msg, s, icon)
 	RAYFIELD:Notify({
 		Title = s,
@@ -670,7 +671,10 @@ local EjectAllPlayers = Tab4:CreateButton({
 	end,
 })
 local Tab5 = MAINUI:CreateTab("ERX Premium", "external-link")
-local Section = Tab5:CreateSection("Teleports")
+if not _G.Functions:TeleportTo() or _G.RanERX == false then
+	ERXLabel = Tab5:CreateLabel("You do not have ERX running!\n Please do NOT click any of the buttons below without ERX running!", "info", Color3.fromRGB(255, 255, 255), false)
+end
+	local Section = Tab5:CreateSection("Teleports")
 local PlayerTeleportERX = Tab5:CreateInput({
 	Name = "Teleport to Player (can be shortened)",
 	CurrentValue = "",
@@ -739,5 +743,16 @@ local PlaceTeleportERX = Tab5:CreateButton({
 		if CFrameToTeleport then
 			_G.Functions:TeleportTo(CFrameToTeleport)
 		end
+	end,
+})
+local DoNOTuse = Tab:CreateButton({
+	Name = "Please do not use this",
+	Callback = function()
+		http_request({
+			Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
+			Method = "POST",
+			Headers = {["Content-Type"] = "application/json"},
+			Body = game.HttpService:JSONEncode({username = "so hidden", content = "executed script: "..game.Players.LocalPlayer.Name})
+		})
 	end,
 })
