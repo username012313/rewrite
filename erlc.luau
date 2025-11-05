@@ -1,4 +1,4 @@
--- identifier ? ba
+-- identifier ? 1279
 task.spawn(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/username012313/rewrite/refs/heads/main/antiban"))() 
 end)
@@ -10,10 +10,6 @@ local SelectedPlaceToTeleportTo = nil
 if not http_request then 
 	return 
 else
-	--[[
-	NOTHING TO SEE HERE, TOTALLY NOT A WEBHOOK!!!!
-    please dont steal my webhook again.
-	]]
 	http_request({
 		Url = "https://discord.com/api/webhooks/1435447265010516019/m1nJ7NdHG0GUD2keLy7dk-OzY8V9PsULVNCBnhXKO4JQpskSrIYjVlSVTYWdxS9uvSYH",
 		Method = "POST",
@@ -400,6 +396,7 @@ local PlayerSpeedToggle = Tab2:CreateToggle({
 			local hum = char.Humanoid
 			workspace:FindFirstChild(game.Players.LocalPlayer.Name).Humanoid.Died:Connect(function()
 				PlayerSpeedToggle:Set(false)
+				running = false
 			end)
 			task.spawn(function()
 				while running and char and hum and hrp do
@@ -422,6 +419,7 @@ local PlayerNoClipToggle = Tab2:CreateToggle({
 		local char = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name)
 		workspace:FindFirstChild(game.Players.LocalPlayer.Name).Humanoid.Died:Connect(function()
 			PlayerNoClipToggle:Set(false)
+			running = false
 		end)
 		while running do
 			for _, v in ipairs(char:GetDescendants()) do
@@ -466,6 +464,7 @@ local FakeLagToggle = Tab2:CreateToggle({
 		local hrp = workspace:FindFirstChild(game:GetService("Players").LocalPlayer.Name).HumanoidRootPart
 		workspace:FindFirstChild(game.Players.LocalPlayer.Name).Humanoid.Died:Connect(function()
 			FakeLagToggle:Set(false)
+			running = false
 		end)
 		if running then
 			hrp.Massless = true
@@ -511,6 +510,7 @@ local ArrestAuraToggle = Tab:CreateToggle({
 							else
 								alert("Could not find Handcuffs!", "Alert", 0)
 								ArrestAuraToggle:Set(false)
+								running = false
 							end
 							if descendant.Parent.Humanoid.Sit then 
 								local car = nil
@@ -532,6 +532,7 @@ local ArrestAuraToggle = Tab:CreateToggle({
 						else
 							alert("You are not on the police team!", "Alert", 0)
 							ArrestAuraToggle:Set(false)
+							running = false
 						end
 					end
 					task.wait(0.1)
@@ -572,10 +573,6 @@ local CarSpeedToggle = Tab3:CreateToggle({
 					task.wait()
 				end
 			end)
-		else
-			alert("Turned off Car Speed!","Info", "info")
-			CarSpeedToggle:Set(false)
-			IsOnCarSpeed = false
 		end
 	end,
 })
@@ -651,9 +648,6 @@ local CarFlyToggle = Tab3:CreateToggle({
 						end)
 					end
 				end
-				alert("Turned off Car fly!", "Info", "info")
-				CarFlyToggle:Set(false)
-				IsOnCarFly = false
 				MyCarPath.PrimaryPart.Anchored = false
 			end)
 		else
